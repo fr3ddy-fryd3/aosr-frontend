@@ -16,7 +16,7 @@ api.interceptors.response.use(
   (error) => Promise.reject(error)
 );
 
-// Преобразование запроса (camelCase -> snakeCase)
+// Преобразование запроса (camelCase -> snake_case)
 api.interceptors.request.use(
   (config) => {
     if (config.data) {
