@@ -1,52 +1,32 @@
 import { Material } from "../../../entities/material"
+import Table from "../../../shared/ui/Table";
+import TableHeaderCell from "../../../shared/ui/TableHeaderCell";
+import MaterialRow from "./MaterialRow";
 
 type MaterialTableProps = {
   materials: Material[];
 };
 
+const onCreate = () => { };
+const onEdit = () => { };
+const onDelete = () => { };
+
 export function MaterialTable({ materials }: MaterialTableProps) {
   return (
-    <table className="w-full mt-4 text-left table-auto">
+    <Table>
       <thead>
         <tr>
-          <th className="p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-            <p className="flex items-center justify-between gap-2 font-sans text-base font-normal leading-none text-slate-500">Название</p>
-          </th>
-          <th className="p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-            <p className="flex items-center justify-between gap-2 font-sans text-base font-normal leading-none text-slate-500">Ед. измерения</p>
-          </th>
-          <th className="p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-            <p className="flex items-center justify-between gap-2 font-sans text-base font-normal leading-none text-slate-500">Удельный вес</p>
-          </th>
-          <th className="p-4 transition-colors cursor-pointer border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-          </th>
+          <TableHeaderCell>Название</TableHeaderCell>
+          <TableHeaderCell>Ед. измерения</TableHeaderCell>
+          <TableHeaderCell>Удельный вес</TableHeaderCell>
+          <TableHeaderCell> </TableHeaderCell>
         </tr>
       </thead>
-      <tbody className="divide-y divide-gray-200">
+      <tbody>
         {materials.map((material) => (
-          <tr>
-            <th className="p-4 border-b border-slate-200">
-              <p className="text-base text-slate-500">{material.name}</p>
-            </th>
-            <th className="p-4 border-b border-slate-200">
-              <p className="text-base text-slate-500">{material.units}</p>
-            </th>
-            <th className="p-4 border-b border-slate-200">
-              <p className="text-base text-slate-500">{material.id}</p>
-            </th>
-            <th className="p-4 border-b border-slate-200 w-fit">
-              <div className="flex justify-end gap-2">
-                <button className="flex items-center">
-                  <img src="../../../../public/edit.svg" alt="Edit" className="w-6 h-6 p-1 bg-green-400 hover:bg-green-500 rounded-full transition-all" />
-                </button>
-                <button className="flex items-center">
-                  <img src="../../../../public/delete.svg" alt="Delete" className="w-6 h-6 p-1 bg-red-400 hover:bg-red-500 rounded-full transition-all" />
-                </button>
-              </div>
-            </th>
-          </tr>
+          <MaterialRow key={material.id} onEdit={onEdit} onDelete={onDelete} material={material} />
         ))}
       </tbody>
-    </table>
+    </Table>
   );
 }

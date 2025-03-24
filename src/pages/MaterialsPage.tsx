@@ -14,7 +14,7 @@ export default function MaterialsPage() {
       }
     }
     fetchMaterials();
-  }, [])
+  }, [materials])
 
   return (
     <div className="p-4">
@@ -23,7 +23,7 @@ export default function MaterialsPage() {
           <h1 className="text-gray-800 font-sans text-xl">Материалы</h1>
           <p className="text-gray-500 font-sans text-lg">Таблица</p>
         </div>
-        <button className="rounded-lg border border-gray-700 h-fit w-fit px-8 py-2 hover:text-white hover:bg-gray-700 transition-all">Создать</button>
+        <button className="rounded-lg border border-gray-700 h-fit w-fit px-8 py-2 hover:text-white hover:bg-gray-700 transition">Создать</button>
       </div>
       <MaterialTable materials={materials} />
     </div>
