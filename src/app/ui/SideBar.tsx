@@ -2,11 +2,21 @@ import { NavLink } from "react-router-dom"
 
 export default function Sidebar() {
   return (
-    <aside className="h-fit bg-white rounded-lg shadow-lg p-4">
+    <aside className="flex flex-col h-fit bg-white rounded-lg shadow-lg p-2">
       <NavLink
         to="/materials"
-        className="text-blue-500 hover:text-blue-600">
-        <span className="text-xl">📦 Материалы</span>
+        className="text-gray-800 font-sans p-2 hover:bg-gray-100 transition-all">
+        <span className="text-lg">Материалы</span>
+      </NavLink>
+      <NavLink
+        to="/passports"
+        className="text-gray-800 font-sans p-2 hover:bg-gray-100 transition-all">
+        <span className="text-lg">Паспорта</span>
+      </NavLink>
+      <NavLink
+        to="/"
+        className="text-gray-800 font-sans p-2 hover:bg-gray-100 transition-all">
+        <span className="text-lg">Проекты</span>
       </NavLink>
     </aside>
   )

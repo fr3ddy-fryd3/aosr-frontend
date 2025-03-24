@@ -6,10 +6,10 @@ export default function App() {
     <div className="flex justify-center w-screen h-screen bg-gray-100 p-4">
       {/* Контейнер, содержащий navbar и контент */}
       <div className="flex w-full">
-        <div className='w-1/7'>
+        <div className='w-1/8'>
           <Sidebar />
         </div>
-        <div className='w-6/7'>
+        <div className='w-7/8'>
           <ContentContainer />
         </div>
       </div>
