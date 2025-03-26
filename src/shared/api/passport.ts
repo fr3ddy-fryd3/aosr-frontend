@@ -6,7 +6,7 @@ import { CreatePassportDTO, UpdatePassportDTO } from "../dto/passport";
 export const passportApi = {
   get: async () => {
     try {
-      let response: AxiosResponse<Passport> = await api.get("/passport");
+      let response: AxiosResponse<Passport[]> = await api.get("/passport");
       return response.data;
     } catch (err) {
       console.error(err);
