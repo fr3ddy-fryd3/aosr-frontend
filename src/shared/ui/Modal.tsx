@@ -10,10 +10,10 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" onClick={onClose}>
-      <div className="bg-white rounded-lg p-6 shadow-lg w-96" onClick={(e) => e.stopPropagation()}>
-        <button className="absolute top-2 right-2 rounded-full p-1 text-white bg-red-400 hover:bg-red-500 transition-all" onClick={onClose}>
-          ✕
+    <div className="fixed inset-0 flex bg-black/50 items-center justify-center" onClick={onClose}>
+      <div className="relative bg-white rounded-lg p-8 shadow-lg w-lg" onClick={(e) => e.stopPropagation()}>
+        <button className="flex items-center justify-center absolute top-2 right-2 rounded-full w-6 h-6  text-white bg-red-400 hover:bg-red-500 transition-all" onClick={onClose}>
+          <img src="../../../public/x.svg" alt="Exit" className="h-2 w-2 " />
         </button>
         {children}
       </div>

@@ -4,8 +4,8 @@ import TableCell from "../../../shared/ui/TableCell";
 
 type MaterialRowProps = {
   material: Material;
-  onEdit: () => void;
-  onDelete: () => void;
+  onEdit: (material: Material) => void;
+  onDelete: (material: Material) => void;
 }
 
 export default function MaterialRow({ material, onEdit, onDelete }: MaterialRowProps) {
@@ -13,9 +13,9 @@ export default function MaterialRow({ material, onEdit, onDelete }: MaterialRowP
     <tr>
       <TableCell>{material.name}</TableCell>
       <TableCell>{material.units}</TableCell>
-      <TableCell>{material.id}</TableCell>
+      <TableCell>{material.density}</TableCell>
       <th className="p-4 border-b border-slate-200 w-fit">
-        <ActionButtons onEdit={onEdit} onDelete={onDelete} />
+        <ActionButtons onEdit={() => onEdit(material)} onDelete={() => onDelete(material)} />
       </th>
     </tr>
   )

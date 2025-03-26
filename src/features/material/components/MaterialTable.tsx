@@ -5,13 +5,11 @@ import MaterialRow from "./MaterialRow";
 
 type MaterialTableProps = {
   materials: Material[];
+  onEdit: (material: Material) => void;
+  onDelete: (material: Material) => void;
 };
 
-const onCreate = () => { };
-const onEdit = () => { };
-const onDelete = () => { };
-
-export function MaterialTable({ materials }: MaterialTableProps) {
+export function MaterialTable({ materials, onEdit, onDelete }: MaterialTableProps) {
   return (
     <Table>
       <thead>

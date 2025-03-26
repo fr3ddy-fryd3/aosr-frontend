@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import api from ".";
 
 import { Material } from "../../entities/material";
-import { CreateMaterialDTO, UpdateMaterialDTO } from "../types/material";
+import { CreateMaterialDTO, UpdateMaterialDTO } from "../dto/material";
 
 
 export const materialApi = {
@@ -30,9 +30,9 @@ export const materialApi = {
       console.error(err);
     }
   },
-  update: async (data: UpdateMaterialDTO) => {
+  update: async (id: number, data: UpdateMaterialDTO) => {
     try {
-      let response: AxiosResponse<Material> = await api.patch(`/material`, data);
+      let response: AxiosResponse<Material> = await api.patch(`/material/${id}`, data);
       return response.data;
     } catch (err) {
       console.error(err)
@@ -40,8 +40,8 @@ export const materialApi = {
   },
   delete: async (id: number) => {
     try {
-      let response: AxiosResponse<boolean> = await api.delete(`/material/${id}`);
-      return response.data;
+      let response = await api.delete(`/material/${id}`);
+      return response.status;
     } catch (err) {
       console.error(err);
     }
