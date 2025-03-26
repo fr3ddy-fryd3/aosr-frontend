@@ -6,9 +6,13 @@ import { MaterialTable } from "../features/material/components/MaterialTable"
 import Modal from "../shared/ui/Modal"
 import Input from "../shared/ui/Input"
 import Button from "../shared/ui/Button"
+import Select from "react-select/base"
 
 export default function MaterialsPage() {
   const [materials, setMaterials] = useState<Material[]>([])
+
+  const [unitInputValue, setUnitInputValue] = useState('');
+  const [isUnitMenuOpen, setIsUnitMenuOpen] = useState(false);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -18,6 +22,16 @@ export default function MaterialsPage() {
   const [updateMaterial, setUpdateMaterial] = useState<UpdateMaterialDTO>({});
   const [materialToEdit, setMaterialToEdit] = useState<Material>({ id: 0, name: "", units: "", density: 0 });
   const [materialToDelete, setMaterialToDelete] = useState<Material>({ id: 0, name: "", units: "", density: 0 })
+
+  interface Option {
+    label: string;
+    value: string;
+  }
+
+  const unitOptions: Option[] = ["т/м³", "г/см³", "м²", "л"].map((unit) => ({
+    label: unit,
+    value: unit,
+  }));
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -31,7 +45,7 @@ export default function MaterialsPage() {
     const created = await materialApi.create(newMaterial);
     if (created !== undefined) {
       setMaterials([...materials, created]);
-      setNewMaterial({ name: "", units: "", density: 0 });
+      setNewMaterial({ name: "", units: "", density: "" });
       setIsCreateModalOpen(false);
     }
   }
@@ -81,21 +95,47 @@ export default function MaterialsPage() {
       <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)}>
         <h2 className="text-xl text-gray-800 mb-4">Создание материала</h2>
         <div className="space-y-4">
+
           <Input
             value={newMaterial.name}
             onChange={(e) => setNewMaterial({ ...newMaterial, name: e.target.value })}
             placeholder="Название"
           />
-          <Input
-            value={newMaterial.units}
-            onChange={(e) => setNewMaterial({ ...newMaterial, units: e.target.value })}
-            placeholder="Ед. измерения"
-          />
+
+          <Select<Option>
+            options={unitOptions}
+            value={unitOptions.find((option) => option.value === newMaterial.units) || null}
+            onChange={(option) => setNewMaterial({ ...newMaterial, units: option?.value || '' })}
+            inputValue={unitInputValue}
+            onInputChange={(value) => setUnitInputValue(value)}
+            onMenuOpen={() => {
+              setIsUnitMenuOpen(true);
+              setUnitInputValue('');
+            }}
+            onMenuClose={() => {
+              setIsUnitMenuOpen(false);
+              setUnitInputValue('');
+            }}
+            menuIsOpen={isUnitMenuOpen}
+            isSearchable={true}
+            isMulti={false}
+            placeholder="Ед. измерения" />
+
           <Input
             value={newMaterial.density.toString()}
-            onChange={(e) => setNewMaterial({ ...newMaterial, density: Number(e.target.value) })}
+            onChange={(e) => {
+              const rawValue = e.target.value.replace(/[^0-9.,]/g, '');
+
+              if (/^[0-9]*[.,]?[0-9]*$/.test(rawValue)) {
+                setNewMaterial({
+                  ...newMaterial,
+                  density: rawValue,
+                });
+              }
+            }}
             placeholder="Удельный вес"
           />
+
           <Button onClick={onCreate} variant="modal">
             Сохранить
           </Button>

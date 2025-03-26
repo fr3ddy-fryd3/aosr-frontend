@@ -1,7 +1,7 @@
 export interface CreateMaterialDTO {
   name: string;
   units: string;
-  density: number;
+  density: string;
 }
 
 export interface UpdateMaterialDTO {
