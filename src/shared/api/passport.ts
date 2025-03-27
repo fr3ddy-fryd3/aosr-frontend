@@ -1,7 +1,7 @@
 import api from ".";
 import { AxiosResponse } from "axios";
-import { Passport } from "../../entities/passport";
-import { CreatePassportDTO, UpdatePassportDTO } from "../dto/passport";
+import { Passport } from "@/entities/passport";
+import { CreatePassportDTO, UpdatePassportDTO } from "@/shared/model/dto/passport";
 
 export const passportApi = {
   get: async () => {

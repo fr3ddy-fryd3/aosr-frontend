@@ -1,9 +1,8 @@
 import { AxiosResponse } from "axios";
 import api from ".";
 
-import { Material } from "../../entities/material";
-import { CreateMaterialDTO, UpdateMaterialDTO } from "../dto/material";
-
+import { Material } from "@/entities/material";
+import { CreateMaterialDTO, UpdateMaterialDTO } from "@/shared/model/dto/material";
 
 export const materialApi = {
   get: async () => {

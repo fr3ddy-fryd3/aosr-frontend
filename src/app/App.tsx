@@ -1,5 +1,5 @@
-import Sidebar from './ui/SideBar';
-import ContentContainer from './ui/ContentContainer';
+import Sidebar from '@/app/ui/SideBar';
+import ContentContainer from '@/app/ui/ContentContainer';
 
 export default function App() {
   return (

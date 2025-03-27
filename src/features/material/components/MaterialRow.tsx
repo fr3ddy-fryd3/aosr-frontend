@@ -1,6 +1,6 @@
-import { Material } from "../../../entities/material";
-import ActionButtons from "../../../shared/ui/ActionButtons";
-import TableCell from "../../../shared/ui/TableCell";
+import { Material } from "@/entities/material";
+import ActionButtons from "@/shared/ui/ActionButtons";
+import TableCell from "@/shared/ui/TableCell";
 
 type MaterialRowProps = {
   material: Material;

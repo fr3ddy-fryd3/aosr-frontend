@@ -1,6 +1,6 @@
-import { Passport } from "../../../entities/passport"
-import ActionButtons from "../../../shared/ui/ActionButtons";
-import TableCell from "../../../shared/ui/TableCell";
+import { Passport } from "@/entities/passport"
+import ActionButtons from "@/shared/ui/ActionButtons";
+import TableCell from "@/shared/ui/TableCell";
 
 type PassportRowProps = {
   passport: Passport;

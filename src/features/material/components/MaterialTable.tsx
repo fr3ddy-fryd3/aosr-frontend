@@ -1,7 +1,7 @@
-import { Material } from "../../../entities/material"
-import Table from "../../../shared/ui/Table";
-import TableHeaderCell from "../../../shared/ui/TableHeaderCell";
-import MaterialRow from "./MaterialRow";
+import { Material } from "@/entities/material"
+import Table from "@/shared/ui/Table";
+import TableHeaderCell from "@/shared/ui/TableHeaderCell";
+import MaterialRow from "@/features/material/components/MaterialRow";
 
 type MaterialTableProps = {
   materials: Material[];

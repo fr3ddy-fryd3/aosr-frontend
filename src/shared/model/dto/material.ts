@@ -7,5 +7,5 @@ export interface CreateMaterialDTO {
 export interface UpdateMaterialDTO {
   name?: string;
   units?: string;
-  density?: number;
+  density?: string;
 }

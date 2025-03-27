@@ -1,4 +1,3 @@
-// src/shared/api/index.ts
 import axios from 'axios';
 import camelCase from 'camelcase-keys';
 import snakeCase from 'snakecase-keys';

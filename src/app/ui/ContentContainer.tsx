@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom"
-import MaterialsPage from "../../pages/MaterialsPage"
-import PassportPage from "../../pages/PassportPage"
+import MaterialsPage from "@/pages/MaterialsPage"
+import PassportPage from "@/pages/PassportPage"
 
 export default function ContentContainer() {
   return (

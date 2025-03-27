@@ -1,6 +1,6 @@
 export interface CreatePassportDTO {
   number: string;
-  volume: number;
+  volume: string;
 }
 
 export interface UpdatePassportDTO {

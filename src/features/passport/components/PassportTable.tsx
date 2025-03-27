@@ -1,7 +1,7 @@
-import { Passport } from "../../../entities/passport"
-import Table from "../../../shared/ui/Table";
-import TableHeaderCell from "../../../shared/ui/TableHeaderCell";
-import PassportRow from "./PassportRow";
+import { Passport } from "@/entities/passport"
+import Table from "@/shared/ui/Table";
+import TableHeaderCell from "@/shared/ui/TableHeaderCell";
+import PassportRow from "@/features/passport/components/PassportRow";
 
 type PassportTableProps = {
   passports: Passport[];

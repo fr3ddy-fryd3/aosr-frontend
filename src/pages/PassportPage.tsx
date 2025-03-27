@@ -1,34 +1,49 @@
 import { useEffect, useState } from "react"
-import { Passport } from "../entities/passport"
-import { CreatePassportDTO, UpdatePassportDTO } from "../shared/dto/passport"
-import { passportApi } from "../shared/api/passport"
-import Modal from "../shared/ui/Modal"
-import Input from "../shared/ui/Input"
-import Button from "../shared/ui/Button"
-import PassportTable from "../features/passport/components/PassportTable"
+import { Passport } from "@/entities/passport"
+import { Material } from "@/entities/material"
+import { CreatePassportDTO, UpdatePassportDTO } from "@/shared/model/dto/passport"
+import { passportApi } from "@/shared/api/passport"
+import Modal from "@/shared/ui/Modal"
+import Button from "@/shared/ui/Button"
+import PassportTable from "@/features/passport/components/PassportTable"
+import { materialApi } from "@/shared/api/material"
+import { Option } from "@/entities/option"
 
 export default function PassportPage() {
   const [passports, setPassports] = useState<Passport[]>([])
+  const [materials, setMaterials] = useState<Material[]>([])
 
+  // Состояния для выпадающего списка
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [newPassport, setNewPassport] = useState<CreatePassportDTO>({});
-  const [updatePassport, setUpdatePassport] = useState<UpdatePassportDTO>({});
-  const [passportToEdit, setPassportToEdit] = useState<Passport>({});
-  const [passportToDelete, setPassportToDelete] = useState<Passport>({})
+  // Состояния для паспортов
+  const [newPassport, setNewPassport] = useState<CreatePassportDTO>({} as CreatePassportDTO);
+  const [updatePassport, setUpdatePassport] = useState<UpdatePassportDTO>({} as UpdatePassportDTO);
+  const [passportToEdit, setPassportToEdit] = useState<Passport>({} as Passport);
+  const [passportToDelete, setPassportToDelete] = useState<Passport>({} as Passport)
+
+
+  // Загрузка материалов и паспортов
+  useEffect(() => {
+    const fetchData = async () => {
+      const passportData = await passportApi.get();
+      const materialData = await materialApi.get();
+      if (passportData !== undefined) setPassports(passportData);
+      if (materialData !== undefined) setMaterials(materialData);
+    }
+    fetchData();
+  }, [])
+
+  // Данные для выпадающего списка
+  const materialOptions: Option[] = materials.map((material) => ({
+    value: material,
+    label: material.name,
+  }));
 
   const onEdit = async (passport: Passport) => { };
   const onDelete = async (passport: Passport) => { };
-
-  useEffect(() => {
-    const fetchMaterials = async () => {
-      const data = await passportApi.get();
-      if (data !== undefined) setPassports(data);
-    }
-    fetchMaterials();
-  }, [])
 
   return (
 
@@ -45,7 +60,11 @@ export default function PassportPage() {
         </Button>
       </div>
 
+      {/* Таблица паспортов */}
       <PassportTable passports={passports} onEdit={onEdit} onDelete={onDelete} />
+
+      {/* Модальное окно создания пасспорта */}
+      <Modal
 
     </div>
   )
