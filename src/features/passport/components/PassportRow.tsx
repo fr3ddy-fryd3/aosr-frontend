@@ -4,19 +4,30 @@ import TableCell from "@/shared/ui/TableCell";
 
 type PassportRowProps = {
   passport: Passport;
-  onEdit: (passport: Passport) => void;
-  onDelete: (passport: Passport) => void;
+  editMode: (passport: Passport) => void;
+  deleteMode: (passport: Passport) => void;
 }
 
-export default function PassportRow({ passport, onEdit, onDelete }: PassportRowProps) {
+export default function PassportRow({ passport, editMode: editMode, deleteMode: deleteMode }: PassportRowProps) {
+  const units = passport.material.units.split('/');
+
+  const getWeight = (vol: string) => {
+    let volume = Number(vol);
+    let density = Number(passport.material.density);
+    return (volume * density).toFixed(2);
+  }
+
+  const volumeCell = (vol: string) => {
+    return `${vol} ${units[0]} / ${getWeight(vol)} ${units[1]}`
+  }
   return (
     <tr>
       <TableCell>{passport.number}</TableCell>
-      <TableCell>{passport.material.name}</TableCell>
-      <TableCell>{passport.volume}</TableCell>
-      <TableCell>{passport.availableVolume}</TableCell>
+      <TableCell>{passport.material.name + ", " + passport.material.units}</TableCell>
+      <TableCell>{volumeCell(passport.volume)}</TableCell>
+      <TableCell>{volumeCell(passport.availableVolume)}</TableCell>
       <th className="p-4 border-b border-slate-200 w-fit">
-        <ActionButtons onEdit={() => onEdit(passport)} onDelete={() => onDelete(passport)} />
+        <ActionButtons editMode={() => editMode(passport)} deleteMode={() => deleteMode(passport)} />
       </th>
     </tr>
   )

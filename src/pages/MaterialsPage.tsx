@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react"
 import { Material } from "@/entities/material"
 import { Option } from "@/entities/option"
-import { CreateMaterialDTO, UpdateMaterialDTO } from "@/shared/model/dto/material"
-import { materialApi } from "@/shared/api/material"
 import { MaterialTable } from "@/features/material/components/MaterialTable"
-import Modal from "@/shared/ui/Modal"
-import { NumberInput, TextInput } from "@/shared/ui/Input"
+import { materialApi } from "@/shared/api/material"
+import { CreateMaterialDTO, UpdateMaterialDTO } from "@/shared/model/dto/material"
 import Button from "@/shared/ui/Button"
+import { NumberInput, TextInput } from "@/shared/ui/Input"
+import Modal from "@/shared/ui/Modal"
+import { useEffect, useState } from "react"
 import Select from "react-select/base"
 
 export default function MaterialsPage() {
@@ -22,13 +22,13 @@ export default function MaterialsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Состояния материалов
-  const [newMaterial, setNewMaterial] = useState<CreateMaterialDTO>({} as CreateMaterialDTO);
-  const [updateMaterial, setUpdateMaterial] = useState<UpdateMaterialDTO>({} as UpdateMaterialDTO);
-  const [materialToEdit, setMaterialToEdit] = useState<Material>({} as Material);
+  const [createData, setCreateData] = useState<CreateMaterialDTO>({} as CreateMaterialDTO);
+  const [updateData, setUpdateData] = useState<UpdateMaterialDTO>({} as UpdateMaterialDTO);
+  const [materialToUpdate, setMaterialToUpdate] = useState<Material>({} as Material);
   const [materialToDelete, setMaterialToDelete] = useState<Material>({} as Material)
 
   // Данные для выпадающего списка
-  const unitOptions: Option[] = ["т/м³", "г/см³", "м²", "л"].map((unit) => ({
+  const unitOptions: Option[] = ["м³/т", "см³/г", "м²", "л"].map((unit) => ({
     label: unit,
     value: unit,
   }));
@@ -44,32 +44,33 @@ export default function MaterialsPage() {
 
   // Запрос на создание материала и проверка его создания
   const onCreate = async () => {
-    const created = await materialApi.create(newMaterial);
+    const created = await materialApi.create(createData);
     if (created !== undefined) {
       setMaterials([...materials, created]);
-      setNewMaterial({ name: "", units: "", density: "" });
+      setCreateData({} as CreateMaterialDTO);
       setIsCreateModalOpen(false);
     }
   }
 
   // Состояние редактирования
-  const onEdit = (material: Material) => {
-    setMaterialToEdit(material);
+  const editMode = (material: Material) => {
+    setMaterialToUpdate(material);
     setIsUpdateModalOpen(true);
   }
 
   // Запрос на обновление материала и проверка его обновления
-  const onUpdate = async (id: number) => {
-    const updated = await materialApi.update(id, updateMaterial);
+  const onEdit = async () => {
+    const updated = await materialApi.update(materialToUpdate.id, updateData);
     if (updated !== undefined) {
       setMaterials(materials.map((m) => (m.id === updated.id ? updated : m)));
-      setUpdateMaterial({});
+      setUpdateData({} as UpdateMaterialDTO);
+      setMaterialToUpdate({} as Material);
       setIsUpdateModalOpen(false);
     }
   }
 
   // Состояние удаления
-  const onDelete = (material: Material) => {
+  const deleteMode = (material: Material) => {
     setMaterialToDelete(material);
     setIsDeleteModalOpen(true);
   }
@@ -79,6 +80,7 @@ export default function MaterialsPage() {
     const deleted = await materialApi.delete(id);
     if (deleted == 204) {
       setMaterials(materials.filter((m) => (m.id !== id)));
+      setMaterialToDelete({} as Material);
       setIsDeleteModalOpen(false);
     }
   };
@@ -99,7 +101,7 @@ export default function MaterialsPage() {
       </div>
 
       {/* Таблица материалов */}
-      <MaterialTable materials={materials} onEdit={onEdit} onDelete={onDelete} />
+      <MaterialTable materials={materials} editMode={editMode} deleteMode={deleteMode} />
 
       {/* Модальное окно создание материала */}
       <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)}>
@@ -107,16 +109,16 @@ export default function MaterialsPage() {
         <div className="space-y-4">
 
           <TextInput
-            value={newMaterial.name}
-            onChange={(value) => setNewMaterial({ ...newMaterial, name: value })}
+            value={createData.name}
+            onChange={(value) => setCreateData({ ...createData, name: value })}
             placeholder="Название"
             error=""
           />
 
           <Select<Option>
             options={unitOptions}
-            value={unitOptions.find((option) => option.value === newMaterial.units) || null}
-            onChange={(option) => setNewMaterial({ ...newMaterial, units: option?.value || '' })}
+            value={unitOptions.find((option) => option.value === createData.units) || null}
+            onChange={(option) => setCreateData({ ...createData, units: option?.value || '' })}
             inputValue={unitInputValue}
             onInputChange={(value) => setUnitInputValue(value)}
             onMenuOpen={() => {
@@ -133,8 +135,8 @@ export default function MaterialsPage() {
             placeholder="Ед. измерения" />
 
           <NumberInput
-            value={newMaterial.density}
-            onChange={(value: string) => setNewMaterial({ ...newMaterial, density: value })}
+            value={createData.density}
+            onChange={(value: string) => setCreateData({ ...createData, density: value })}
             placeholder="Удельный вес"
             error=""
           />
@@ -150,16 +152,16 @@ export default function MaterialsPage() {
         <div className="space-y-4">
 
           <TextInput
-            value={updateMaterial.name || ''}
-            onChange={(value) => setUpdateMaterial({ ...updateMaterial, name: value })}
-            placeholder="Название"
+            value={updateData.name || ''}
+            onChange={(value) => setUpdateData({ ...updateData, name: value })}
+            placeholder={materialToUpdate.name}
             error=""
           />
 
           <Select<Option>
             options={unitOptions}
-            value={unitOptions.find((option) => option.value === updateMaterial.units) || null}
-            onChange={(option) => setUpdateMaterial({ ...updateMaterial, units: option?.value || '' })}
+            value={unitOptions.find((option) => option.value === updateData.units) || null}
+            onChange={(option) => setUpdateData({ ...updateData, units: option?.value || '' })}
             inputValue={unitInputValue}
             onInputChange={(value) => setUnitInputValue(value)}
             onMenuOpen={() => {
@@ -173,15 +175,15 @@ export default function MaterialsPage() {
             menuIsOpen={isUnitMenuOpen}
             isSearchable={true}
             isMulti={false}
-            placeholder="Ед. измерения" />
+            placeholder={materialToUpdate.units} />
 
           <NumberInput
-            value={updateMaterial.density || ''}
-            onChange={(value: string) => setUpdateMaterial({ ...updateMaterial, density: value })}
-            placeholder="Удельный вес"
+            value={updateData.density || ''}
+            onChange={(value: string) => setUpdateData({ ...updateData, density: value })}
+            placeholder={materialToUpdate.density}
             error=""
           />
-          <Button onClick={() => onUpdate(materialToEdit.id)} variant="modal">
+          <Button onClick={onEdit} variant="modal">
             Сохранить
           </Button>
         </div>
@@ -189,7 +191,7 @@ export default function MaterialsPage() {
 
       {/* Модальное окно подтверждения удаления материала */}
       <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
-        <h2 className="text-xl text-gray-700">Вы уверены, что хотите удалить "{materialToDelete.name}"?</h2>
+        <h2 className="text-xl text-gray-700">Вы уверены, что хотите удалить следующий материал "{materialToDelete.name}"?</h2>
         <p className="text-gray-400 mb-8">Действие будет невозможно отменить</p>
         <div className="flex gap-4">
           <Button onClick={() => confirmDelete(materialToDelete.id)} variant="danger">Удалить</Button>

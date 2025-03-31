@@ -5,11 +5,11 @@ import MaterialRow from "@/features/material/components/MaterialRow";
 
 type MaterialTableProps = {
   materials: Material[];
-  onEdit: (material: Material) => void;
-  onDelete: (material: Material) => void;
+  editMode: (material: Material) => void;
+  deleteMode: (material: Material) => void;
 };
 
-export function MaterialTable({ materials, onEdit, onDelete }: MaterialTableProps) {
+export function MaterialTable({ materials, editMode: editMode, deleteMode: deleteMode }: MaterialTableProps) {
   return (
     <Table>
       <thead>
@@ -22,7 +22,7 @@ export function MaterialTable({ materials, onEdit, onDelete }: MaterialTableProp
       </thead>
       <tbody>
         {materials.map((material) => (
-          <MaterialRow key={material.id} onEdit={onEdit} onDelete={onDelete} material={material} />
+          <MaterialRow key={material.id} editMode={editMode} deleteMode={deleteMode} material={material} />
         ))}
       </tbody>
     </Table>

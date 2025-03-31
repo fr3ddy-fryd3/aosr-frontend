@@ -5,11 +5,11 @@ import PassportRow from "@/features/passport/components/PassportRow";
 
 type PassportTableProps = {
   passports: Passport[];
-  onEdit: (passport: Passport) => void;
-  onDelete: (passport: Passport) => void;
+  editMode: (passport: Passport) => void;
+  deleteMode: (passport: Passport) => void;
 }
 
-export default function PassportTable({ passports, onEdit, onDelete }: PassportTableProps) {
+export default function PassportTable({ passports, editMode: editMode, deleteMode: deleteMode }: PassportTableProps) {
   return (
     <Table>
       <thead>
@@ -23,7 +23,7 @@ export default function PassportTable({ passports, onEdit, onDelete }: PassportT
       </thead>
       <tbody>
         {passports.map((passport) => (
-          <PassportRow key={passport.id} passport={passport} onEdit={onEdit} onDelete={onDelete} />
+          <PassportRow key={passport.id} passport={passport} editMode={editMode} deleteMode={deleteMode} />
         ))}
       </tbody>
     </Table>

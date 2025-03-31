@@ -1,17 +1,35 @@
+/**
+ * Интерфейс создания проекта
+  * @property {string} name
+  * @property {CreateProjectMaterialDTO[]}
+  */
 export interface CreateProjectDTO {
   name: string;
-  materials: CreatePeojectMaterialDTO[];
+  materials: CreateProjectMaterialDTO[];
 }
 
+/**
+ * Интерфейс обновления проекта
+  * @property {string} name?
+  */
 export interface UpdateProjectDTO {
   name?: string;
 }
 
-interface CreatePeojectMaterialDTO {
+/**
+ * Интерфейс создания материалов привязанных к проекту
+  * @property {number} materialId
+  * @property {string} volume
+  */
+interface CreateProjectMaterialDTO {
   materialId: number;
-  volume: number;
+  volume: string;
 }
 
+/**
+ * Интерфейс обновления материалов привязанных к проекту
+  * @property {string} volume?
+  */
 export interface UpdateProjectMaterialDTO {
-  volume?: number;
+  volume?: string;
 }
