@@ -6,7 +6,7 @@ type ButtonProps = {
   variant?: 'primary' | 'danger' | 'modal';
 }
 
-export default function Button({ onClick, children, variant = 'primary' }: ButtonProps) {
+export function Button({ onClick, children, variant = 'primary' }: ButtonProps) {
   const baseStyles = 'w-fit h-fit px-8 py-2 rounded-md font-medium transition';
   const variantStyles = {
     primary: 'text-gray-700 border border-gray-700 hover:text-white hover:bg-gray-700',

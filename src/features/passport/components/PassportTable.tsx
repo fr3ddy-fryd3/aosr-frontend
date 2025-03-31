@@ -1,7 +1,7 @@
 import { Passport } from "@/entities/passport"
-import Table from "@/shared/ui/Table";
-import TableHeaderCell from "@/shared/ui/TableHeaderCell";
-import PassportRow from "@/features/passport/components/PassportRow";
+import { Table } from "@/shared/ui/Table";
+import { TableHeaderCell } from "@/shared/ui/TableHeaderCell";
+import { PassportRow } from "@/features/passport/components/PassportRow";
 
 type PassportTableProps = {
   passports: Passport[];
@@ -9,7 +9,7 @@ type PassportTableProps = {
   deleteMode: (passport: Passport) => void;
 }
 
-export default function PassportTable({ passports, editMode: editMode, deleteMode: deleteMode }: PassportTableProps) {
+export function PassportTable({ passports, editMode: editMode, deleteMode: deleteMode }: PassportTableProps) {
   return (
     <Table>
       <thead>

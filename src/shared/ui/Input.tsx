@@ -55,12 +55,12 @@ export function VolumeAndCapacityInput({ volumeValue, material, onChange, error 
 
   const capacityToWeight = (capacity: string) => {
     const result = parseFloat(capacity) * parseFloat(material.density);
-    return isNaN(result) ? "" : result.toFixed(2);
+    return isNaN(result) ? "" : result.toFixed(3);
   };
 
   const weightToCapacity = (weight: string) => {
     const result = parseFloat(weight) / parseFloat(material.density);
-    return isNaN(result) ? "" : result.toFixed(2);
+    return isNaN(result) ? "" : result.toFixed(3);
   };
 
   const [localVolume, setLocalVolume] = useState(volumeValue);

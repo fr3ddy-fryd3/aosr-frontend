@@ -1,6 +1,6 @@
 import { Passport } from "@/entities/passport"
-import ActionButtons from "@/shared/ui/ActionButtons";
-import TableCell from "@/shared/ui/TableCell";
+import { ActionButtons } from "@/shared/ui/ActionButtons";
+import { TableCell } from "@/shared/ui/TableCell";
 
 type PassportRowProps = {
   passport: Passport;
@@ -8,13 +8,13 @@ type PassportRowProps = {
   deleteMode: (passport: Passport) => void;
 }
 
-export default function PassportRow({ passport, editMode: editMode, deleteMode: deleteMode }: PassportRowProps) {
+export function PassportRow({ passport, editMode: editMode, deleteMode: deleteMode }: PassportRowProps) {
   const units = passport.material.units.split('/');
 
   const getWeight = (vol: string) => {
     let volume = Number(vol);
     let density = Number(passport.material.density);
-    return (volume * density).toFixed(2);
+    return (volume * density).toFixed(3);
   }
 
   const volumeCell = (vol: string) => {

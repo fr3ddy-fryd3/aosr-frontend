@@ -1,6 +1,6 @@
 import { Material } from "@/entities/material";
-import ActionButtons from "@/shared/ui/ActionButtons";
-import TableCell from "@/shared/ui/TableCell";
+import { ActionButtons } from "@/shared/ui/ActionButtons";
+import { TableCell } from "@/shared/ui/TableCell";
 
 type MaterialRowProps = {
   material: Material;
@@ -8,7 +8,7 @@ type MaterialRowProps = {
   deleteMode: (material: Material) => void;
 }
 
-export default function MaterialRow({ material, editMode: editMode, deleteMode: deleteMode }: MaterialRowProps) {
+export function MaterialRow({ material, editMode: editMode, deleteMode: deleteMode }: MaterialRowProps) {
   return (
     <tr>
       <TableCell>{material.name}</TableCell>

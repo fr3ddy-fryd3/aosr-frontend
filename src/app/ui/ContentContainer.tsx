@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom"
 import MaterialsPage from "@/pages/MaterialsPage"
 import PassportPage from "@/pages/PassportPage"
+import { ProjectPage } from "@/pages/ProjectPage"
 
 export default function ContentContainer() {
   return (
@@ -8,6 +9,7 @@ export default function ContentContainer() {
       <Routes>
         <Route path="/materials" element={<MaterialsPage />} />
         <Route path="/passports" element={<PassportPage />} />
+        <Route path="/" element={<ProjectPage />} />
       </Routes>
     </main>
   )

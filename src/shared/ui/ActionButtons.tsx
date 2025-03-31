@@ -3,7 +3,7 @@ type ActionButtonsProps = {
   deleteMode: () => void;
 }
 
-export default function ActionButtons({ editMode: editMode, deleteMode: deleteMode }: ActionButtonsProps) {
+export function ActionButtons({ editMode: editMode, deleteMode: deleteMode }: ActionButtonsProps) {
   return (
     <div className="flex justify-end gap-2">
       <button className="flex items-center" onClick={editMode}>

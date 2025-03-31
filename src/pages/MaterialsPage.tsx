@@ -3,9 +3,9 @@ import { Option } from "@/entities/option"
 import { MaterialTable } from "@/features/material/components/MaterialTable"
 import { materialApi } from "@/shared/api/material"
 import { CreateMaterialDTO, UpdateMaterialDTO } from "@/shared/model/dto/material"
-import Button from "@/shared/ui/Button"
+import { Button } from "@/shared/ui/Button"
 import { NumberInput, TextInput } from "@/shared/ui/Input"
-import Modal from "@/shared/ui/Modal"
+import { SmallModal } from "@/shared/ui/Modal"
 import { useEffect, useState } from "react"
 import Select from "react-select/base"
 
@@ -104,7 +104,7 @@ export default function MaterialsPage() {
       <MaterialTable materials={materials} editMode={editMode} deleteMode={deleteMode} />
 
       {/* Модальное окно создание материала */}
-      <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)}>
+      <SmallModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)}>
         <h2 className="text-xl text-gray-800 mb-4">Создание материала</h2>
         <div className="space-y-4">
 
@@ -144,10 +144,10 @@ export default function MaterialsPage() {
             Сохранить
           </Button>
         </div>
-      </Modal>
+      </SmallModal>
 
       {/* Модальное окно редактирования материала */}
-      <Modal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)}>
+      <SmallModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)}>
         <h2 className="text-xl text-gray-800 mb-4">Редактирование материала</h2>
         <div className="space-y-4">
 
@@ -187,17 +187,17 @@ export default function MaterialsPage() {
             Сохранить
           </Button>
         </div>
-      </Modal>
+      </SmallModal>
 
       {/* Модальное окно подтверждения удаления материала */}
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+      <SmallModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
         <h2 className="text-xl text-gray-700">Вы уверены, что хотите удалить следующий материал "{materialToDelete.name}"?</h2>
         <p className="text-gray-400 mb-8">Действие будет невозможно отменить</p>
         <div className="flex gap-4">
           <Button onClick={() => confirmDelete(materialToDelete.id)} variant="danger">Удалить</Button>
           <Button onClick={() => setIsDeleteModalOpen(false)} variant="modal">Отмена</Button>
         </div>
-      </Modal>
+      </SmallModal>
 
     </div>
   )

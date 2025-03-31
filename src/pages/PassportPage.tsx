@@ -1,13 +1,13 @@
 import { Material } from "@/entities/material"
 import { Option } from "@/entities/option"
 import { Passport } from "@/entities/passport"
-import PassportTable from "@/features/passport/components/PassportTable"
+import { PassportTable } from "@/features/passport/components/PassportTable"
 import { materialApi } from "@/shared/api/material"
 import { passportApi } from "@/shared/api/passport"
 import { CreatePassportDTO, UpdatePassportDTO } from "@/shared/model/dto/passport"
-import Button from "@/shared/ui/Button"
+import { Button } from "@/shared/ui/Button"
 import { TextInput, NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input"
-import Modal from "@/shared/ui/Modal"
+import { SmallModal } from "@/shared/ui/Modal"
 import { useEffect, useState } from "react"
 import Select from "react-select/base"
 
@@ -128,7 +128,7 @@ export default function PassportPage() {
       <PassportTable passports={passports} editMode={editMode} deleteMode={deleteMode} />
 
       {/* Модальное окно создания паспорта */}
-      <Modal isOpen={isCreateModalOpen} onClose={() => {
+      <SmallModal isOpen={isCreateModalOpen} onClose={() => {
         setIsCreateModalOpen(false);
         setSelectedMaterial({} as Material)
       }}>
@@ -187,10 +187,10 @@ export default function PassportPage() {
             Сохранить
           </Button>
         </div>
-      </Modal>
+      </SmallModal>
 
       {/* Модальное окно для редактирования паспорта */}
-      <Modal isOpen={isUpdateModalOpen} onClose={() => {
+      <SmallModal isOpen={isUpdateModalOpen} onClose={() => {
         setIsUpdateModalOpen(false);
         setSelectedMaterial({} as Material);
       }}>
@@ -251,17 +251,17 @@ export default function PassportPage() {
             Сохранить
           </Button>
         </div>
-      </Modal>
+      </SmallModal>
 
       {/* Модальное окно подтверждения удаления материала */}
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+      <SmallModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
         <h2 className="text-xl text-gray-700">Вы уверены, что хотите удалить паспорт №{passportToDelete.number}?</h2>
         <p className="text-gray-400 mb-8">Действие будет невозможно отменить</p>
         <div className="flex gap-4">
           <Button onClick={() => confirmDelete(passportToDelete.id)} variant="danger">Удалить</Button>
           <Button onClick={() => setIsDeleteModalOpen(false)} variant="modal">Отмена</Button>
         </div>
-      </Modal>
+      </SmallModal>
 
     </div>
   )
