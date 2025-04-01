@@ -15,7 +15,7 @@ export interface Section {
 }
 
 /**
- * Интерфейс для материалов привязанных к разделов
+ * Интерфейс для материалов привязанных к разделу
   * @property {number} id
   * @property {number} sectionId
   * @property {number} materialId

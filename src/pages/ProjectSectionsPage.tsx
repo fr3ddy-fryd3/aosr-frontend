@@ -109,7 +109,7 @@ export function ProjectSectionsPage() {
 
       {/* Модальное окно создания проекта */}
       <SmallModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)}>
-        <h2 className="text-xl text-gray-800 mb-4">Создание материала</h2>
+        <h2 className="text-xl text-gray-800 mb-4">Создание раздела</h2>
         <div className="space-y-4">
 
           <TextInput
@@ -126,7 +126,7 @@ export function ProjectSectionsPage() {
 
       {/* Модальное окно редактирования проекта */}
       <SmallModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)}>
-        <h2 className="text-xl text-gray-800 mb-4">Редактирование материала</h2>
+        <h2 className="text-xl text-gray-800 mb-4">Редактирование раздела</h2>
         <div className="space-y-4">
 
           <TextInput
@@ -143,7 +143,7 @@ export function ProjectSectionsPage() {
 
       {/* Модальное окно подтверждения удаления проекта */}
       <SmallModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
-        <h2 className="text-xl text-gray-700">Вы уверены, что хотите удалить следующий проект: "{sectionToDelete.name}"?</h2>
+        <h2 className="text-xl text-gray-700">Вы уверены, что хотите удалить следующий раздел: "{sectionToDelete.name}"?</h2>
         <p className="text-gray-400 mb-8">Действие будет невозможно отменить</p>
         <div className="flex gap-4">
           <Button onClick={() => confirmDelete(sectionToDelete.id)} variant="danger">Удалить</Button>

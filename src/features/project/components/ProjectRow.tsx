@@ -9,12 +9,12 @@ type ProjectRowProps = {
   deleteMode: (project: Project) => void;
 }
 
-export function ProjectRow({ project, editMode: editMode, deleteMode: deleteMode }: ProjectRowProps) {
+export function ProjectRow({ project, editMode, deleteMode }: ProjectRowProps) {
   const url = `/project/${project.id}`.toString();
   const navigate = useNavigate();
 
   return (
-    <tr className="hover:shadow-lg hover:rounded-lg">
+    <tr className="hover:shadow-lg hover:rounded-lg" onClick={() => navigate(url)}>
 
       <TableCell navigate={() => navigate(url)}>{project.name}</TableCell>
 
