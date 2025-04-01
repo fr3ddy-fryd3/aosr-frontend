@@ -9,7 +9,7 @@ import { SmallModal } from "@/shared/ui/Modal"
 import { useEffect, useState } from "react"
 import Select from "react-select/base"
 
-export default function MaterialsPage() {
+export function MaterialsPage() {
   const [materials, setMaterials] = useState<Material[]>([])
 
   // Состояния для выпадающего списка
@@ -89,6 +89,8 @@ export default function MaterialsPage() {
 
     <div className="p-4">
       <div className="flex justify-between mb-4">
+
+        {/* Заголовок */}
         <div className="flex flex-col">
           <h1 className="text-gray-800 font-sans text-xl">Материалы</h1>
           <p className="text-gray-500 font-sans text-lg">Таблица</p>

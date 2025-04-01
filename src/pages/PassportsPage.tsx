@@ -11,7 +11,7 @@ import { SmallModal } from "@/shared/ui/Modal"
 import { useEffect, useState } from "react"
 import Select from "react-select/base"
 
-export default function PassportPage() {
+export function PassportsPage() {
   const [passports, setPassports] = useState<Passport[]>([])
   const [materials, setMaterials] = useState<Material[]>([])
 
@@ -112,13 +112,15 @@ export default function PassportPage() {
   return (
 
     <div className="p-4">
-
-      {/*Заголовок страницы*/}
       <div className="flex justify-between mb-4">
+
+        {/* Заголовок */}
         <div className="flex flex-col">
           <h1 className="text-gray-800 font-sans text-xl">Паспорта</h1>
           <p className="text-gray-500 font-sans text-lg">Таблица</p>
         </div>
+
+        {/* Кнопка создания проекта */}
         <Button onClick={() => setIsCreateModalOpen(true)} variant="primary">
           Создать
         </Button>

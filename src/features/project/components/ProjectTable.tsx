@@ -10,13 +10,13 @@ type ProjectTableProps = {
   deleteMode: (project: Project) => void;
 }
 
-export function projectTable({ projects, editMode: editMode, deleteMode: deleteMode }: ProjectTableProps) {
+export function ProjectTable({ projects, editMode: editMode, deleteMode: deleteMode }: ProjectTableProps) {
   return (
     <Table>
       <thead>
         <tr>
           <TableHeaderCell>Название</TableHeaderCell>
-          <TableHeaderCell> </TableHeaderCell>
+          <TableHeaderCell isActionButtons={true}> </TableHeaderCell>
         </tr>
       </thead>
       <tbody>

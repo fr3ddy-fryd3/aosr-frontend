@@ -1,6 +1,7 @@
 import { Project } from "@/entities/project";
 import { ActionButtons } from "@/shared/ui/ActionButtons";
 import { TableCell } from "@/shared/ui/TableCell";
+import { useNavigate } from "react-router-dom";
 
 type ProjectRowProps = {
   project: Project;
@@ -9,13 +10,17 @@ type ProjectRowProps = {
 }
 
 export function ProjectRow({ project, editMode: editMode, deleteMode: deleteMode }: ProjectRowProps) {
+  const url = `/project/${project.id}`.toString();
+  const navigate = useNavigate();
 
   return (
-    <tr>
-      <TableCell>{project.name}</TableCell>
+    <tr className="hover:shadow-lg hover:rounded-lg">
+
+      <TableCell navigate={() => navigate(url)}>{project.name}</TableCell>
+
       <th className="p-4 border-b border-slate-200 w-fit">
         <ActionButtons editMode={() => editMode(project)} deleteMode={() => deleteMode(project)} />
       </th>
-    </tr>
+    </tr >
   )
 }
