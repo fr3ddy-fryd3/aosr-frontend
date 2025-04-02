@@ -21,7 +21,7 @@ export function TextInput({ value, onChange, error, placeholder }: InputProps) {
   return (
     <>
       <input
-        className={`w-full p-2 border rounded-md ${error ? 'border-r-red-400' : 'border-gray-300'}`}
+        className={`w-full h-10 p-2 border rounded-md ${error ? 'border-r-red-400' : 'border-gray-300'}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -35,7 +35,7 @@ export function NumberInput({ value, onChange, onBlur, error, placeholder, halfW
   return (
     <>
       <input
-        className={`p-2 border rounded-md ${halfWidth ? 'w-1/2' : 'w-full'} ${error ? 'border-r-red-400' : 'border-gray-300'}`}
+        className={`p-2 h-10 border rounded-md ${halfWidth ? 'w-1/2' : 'w-full'} ${error ? 'border-r-red-400' : 'border-gray-300'}`}
         value={value}
         onChange={(e) => {
           const rawValue = e.target.value.replace(/[^0-9.,]/g, '');

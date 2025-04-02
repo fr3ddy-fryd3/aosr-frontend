@@ -21,15 +21,14 @@ export function ProjectSectionsPage() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Состояния проектов
+  // Состояния разделов 
   const [createData, setCreateData] = useState<CreateSectionDTO>({} as CreateSectionDTO);
   const [updateData, setUpdateData] = useState<UpdateSectionDTO>({} as UpdateSectionDTO);
   const [sectionToUpdate, setSectionToUpdate] = useState<Section>({} as Section);
   const [sectionToDelete, setSectionToDelete] = useState<Section>({} as Section)
 
-  createData.projectId = Number(projectId);
 
-  // Загрузка проектов
+  // Загрузка проекта и его разделов 
   useEffect(() => {
     const fetchData = async () => {
       const sectionsData = await sectionApi.getByProjectId(Number(projectId));
@@ -37,12 +36,13 @@ export function ProjectSectionsPage() {
       if (sectionsData !== undefined) setSections(sectionsData);
       if (projectData !== undefined) setProject(projectData);
     };
-    console.log(sections);
     fetchData();
   }, [])
 
-  // Запрос на создание проекта
+  // Запрос на создание раздела 
   const onCreate = async () => {
+    createData.projectId = Number(projectId);
+
     const created = await sectionApi.create(createData);
     if (created !== undefined) {
       setSections([...sections, created]);
@@ -57,7 +57,7 @@ export function ProjectSectionsPage() {
     setIsUpdateModalOpen(true);
   }
 
-  // Запрос на обновление материала и проверка его обновления
+  // Запрос на обновление раздела и проверка его обновления
   const onEdit = async () => {
     const updated = await sectionApi.update(sectionToUpdate.id, updateData);
     if (updated !== undefined) {
@@ -69,12 +69,12 @@ export function ProjectSectionsPage() {
   }
 
   // Состояние удаления
-  const deleteMode = (material: Section) => {
-    setSectionToDelete(material);
+  const deleteMode = (section: Section) => {
+    setSectionToDelete(section);
     setIsDeleteModalOpen(true);
   }
 
-  // Запрос на удаление материала и проверка его удаления
+  // Запрос на удаление раздела и проверка его удаления
   const confirmDelete = async (id: number) => {
     const deleted = await sectionApi.delete(id);
     if (deleted == 204) {
@@ -88,10 +88,10 @@ export function ProjectSectionsPage() {
   return (
     <div className="p-4">
 
+      {/* Заголовок страницы */}
       <h1 className="text-gray-800 text-center font-sans text-2xl mb-8">Проект "{project.name}"</h1>
 
       <div className="flex justify-between mb-4">
-
         {/* Заголовок таблицы*/}
         <div className="flex flex-col">
           <h1 className="text-gray-800 font-sans text-xl">Разделы</h1>

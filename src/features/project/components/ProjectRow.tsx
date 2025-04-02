@@ -14,12 +14,14 @@ export function ProjectRow({ project, editMode, deleteMode }: ProjectRowProps) {
   const navigate = useNavigate();
 
   return (
-    <tr className="hover:shadow-lg hover:rounded-lg" onClick={() => navigate(url)}>
+    <tr className="hover:shadow-lg hover:rounded-lg">
 
       <TableCell navigate={() => navigate(url)}>{project.name}</TableCell>
 
       <th className="p-4 border-b border-slate-200 w-fit">
-        <ActionButtons editMode={() => editMode(project)} deleteMode={() => deleteMode(project)} />
+        <div className="flex justify-end items-center">
+          <ActionButtons onEdit={() => editMode(project)} onDelete={() => deleteMode(project)} />
+        </div>
       </th>
     </tr >
   )

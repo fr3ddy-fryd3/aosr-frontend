@@ -14,12 +14,14 @@ export function SectionRow({ section, editMode, deleteMode }: SectionRowProps) {
   const navigate = useNavigate();
 
   return (
-    <tr className="hover:shadow-lg hover:rounded-lg" onClick={() => navigate(url)}>
+    <tr className="hover:shadow-lg hover:rounded-lg">
 
       <TableCell navigate={() => navigate(url)}>{section.name}</TableCell>
 
       <th className="p-4 border-b border-slate-200 w-fit">
-        <ActionButtons editMode={() => editMode(section)} deleteMode={() => deleteMode(section)} />
+        <div className="flex justify-end items-center">
+          <ActionButtons onEdit={() => editMode(section)} onDelete={() => deleteMode(section)} />
+        </div>
       </th>
     </tr >
   )

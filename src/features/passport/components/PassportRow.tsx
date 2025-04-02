@@ -27,7 +27,9 @@ export function PassportRow({ passport, editMode: editMode, deleteMode: deleteMo
       <TableCell>{volumeCell(passport.volume)}</TableCell>
       <TableCell>{volumeCell(passport.availableVolume)}</TableCell>
       <th className="p-4 border-b border-slate-200 w-fit">
-        <ActionButtons editMode={() => editMode(passport)} deleteMode={() => deleteMode(passport)} />
+        <div className="flex justify-end items-center">
+          <ActionButtons onEdit={() => editMode(passport)} onDelete={() => deleteMode(passport)} />
+        </div>
       </th>
     </tr>
   )

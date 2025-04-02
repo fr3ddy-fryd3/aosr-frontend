@@ -23,15 +23,17 @@ export interface UpdateSectionDTO {
   * @property {number} materialId
   * @property {string} volume
   */
-interface CreateSectionMaterialDTO {
+export interface CreateSectionMaterialDTO {
   materialId: number;
   volume: string;
 }
 
 /**
  * Интерфейс обновления материала привязанного к разделу
+  * @property {number} materialId?
   * @property {string} volume?
   */
 export interface UpdateSectionMaterialDTO {
+  materialId?: number;
   volume?: string;
 }

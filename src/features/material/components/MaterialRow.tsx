@@ -15,7 +15,9 @@ export function MaterialRow({ material, editMode: editMode, deleteMode: deleteMo
       <TableCell>{material.units}</TableCell>
       <TableCell>{material.density}</TableCell>
       <th className="p-4 border-b border-slate-200 w-fit">
-        <ActionButtons editMode={() => editMode(material)} deleteMode={() => deleteMode(material)} />
+        <div className="flex justify-end items-center">
+          <ActionButtons onEdit={() => editMode(material)} onDelete={() => deleteMode(material)} />
+        </div>
       </th>
     </tr>
   )

@@ -15,7 +15,7 @@ export function SectionTable({ sections, editMode: editMode, deleteMode: deleteM
       <thead>
         <tr>
           <TableHeaderCell>Название</TableHeaderCell>
-          <TableHeaderCell> </TableHeaderCell>
+          <TableHeaderCell isActionButtons={true}> </TableHeaderCell>
         </tr>
       </thead>
       <tbody>

@@ -9,6 +9,7 @@ import { Button } from "@/shared/ui/Button"
 import { TextInput, NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input"
 import { SmallModal } from "@/shared/ui/Modal"
 import { useEffect, useState } from "react"
+import { isUnitTranslatable } from "@/shared/utils/material"
 import Select from "react-select/base"
 
 export function PassportsPage() {
@@ -100,14 +101,6 @@ export function PassportsPage() {
     }
   }
 
-  // По ID материала определяет могут ли ед.изм. быть переведены (м³ <-> т)
-  const isUnitTranslatable = (id: number) => {
-    let material = materials.find((m) => m.id === id)
-
-    if (material?.units.search('/') !== -1) return true;
-    else return false;
-  }
-
 
   return (
 
@@ -167,7 +160,7 @@ export function PassportsPage() {
             placeholder="Материал паспорта" />
 
           {
-            (isUnitTranslatable(createData.materialId)) ? (
+            (isUnitTranslatable(materials, createData.materialId)) ? (
               <VolumeAndCapacityInput
                 volumeValue={createData.volume}
                 material={selectedMaterial || {} as Material}
@@ -179,7 +172,7 @@ export function PassportsPage() {
               <NumberInput
                 value={createData.volume}
                 onChange={(value: string) => setCreateData({ ...createData, volume: value })}
-                placeholder="Объем материалов"
+                placeholder={`Объем, ${selectedMaterial.units}`}
                 error=""
               />
             )
@@ -229,7 +222,7 @@ export function PassportsPage() {
             placeholder={passportToUpdate.material?.name || ''} />
 
           {
-            (isUnitTranslatable(updateData.materialId || passportToUpdate.materialId)) ? (
+            (isUnitTranslatable(materials, updateData.materialId || passportToUpdate.materialId)) ? (
               <VolumeAndCapacityInput
                 volumeValue={updateData.volume || ''}
                 material={selectedMaterial}

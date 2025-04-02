@@ -14,12 +14,14 @@ export function AosrRow({ aosr, editMode, deleteMode }: AosrRowProps) {
   const navigate = useNavigate();
 
   return (
-    <tr className="hover:shadow-lg hover:rounded-lg" onClick={() => navigate(url)}>
+    <tr className="hover:shadow-lg hover:rounded-lg">
 
       <TableCell navigate={() => navigate(url)}>{aosr.name}</TableCell>
 
       <th className="p-4 border-b border-slate-200 w-fit">
-        <ActionButtons editMode={() => editMode(aosr)} deleteMode={() => deleteMode(aosr)} />
+        <div className="flex justify-end items-center">
+          <ActionButtons onEdit={() => editMode(aosr)} onDelete={() => deleteMode(aosr)} />
+        </div>
       </th>
     </tr >
   )

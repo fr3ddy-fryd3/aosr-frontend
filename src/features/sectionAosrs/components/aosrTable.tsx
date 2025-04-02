@@ -15,8 +15,8 @@ export function AosrTable({ aosrs, editMode: editMode, deleteMode: deleteMode }:
     <Table>
       <thead>
         <tr>
-          <TableHeaderCell>Название</TableHeaderCell>
-          <TableHeaderCell> </TableHeaderCell>
+          <TableHeaderCell>№</TableHeaderCell>
+          <TableHeaderCell isActionButtons={true}> </TableHeaderCell>
         </tr>
       </thead>
       <tbody>
