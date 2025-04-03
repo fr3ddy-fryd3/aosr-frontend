@@ -1,15 +1,20 @@
 import { Material } from "@/entities/material";
 import { Option } from "@/entities/option";
 import { Section, SectionMaterial } from "@/entities/section";
+import { ChildrenMaterial } from "@/entities/childrenMaterial";
 import { materialApi } from "@/shared/api/material";
 import { sectionApi } from "@/shared/api/section";
 import { CreateSectionMaterialDTO, UpdateSectionMaterialDTO } from "@/shared/model/dto/section";
 import { ActionButtons } from "@/shared/ui/ActionButtons";
+import { Button } from "@/shared/ui/Button";
 import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
-import { isUnitTranslatable } from "@/shared/utils/material";
-import { useEffect, useState } from "react";
+import { MaterialFormRow } from "@/shared/ui/MaterialFormRow";
+import { getFreeId, isUnitTranslatable } from "@/shared/utils/material";
+import { ReactNode, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Select from "react-select/base";
+import { SmallModal } from "@/shared/ui/Modal";
+import { sectionMaterialApi } from "@/shared/api/sectionMaterial";
 
 
 export function SectionMaterialsPage() {
@@ -20,21 +25,18 @@ export function SectionMaterialsPage() {
   const [sectionMaterials, setSectionMaterials] = useState<SectionMaterial[]>([]);
 
   // Состояния для материалов раздела
-  const [createData, setCreateData] = useState<CreateSectionMaterialDTO>({} as CreateSectionMaterialDTO);
-  const [updateData, setUpdateData] = useState<UpdateSectionMaterialDTO>({} as UpdateSectionMaterialDTO);
-  const [sectionMaterialToUpdate, setSectionMaterialToUpdate] = useState<SectionMaterial>({} as SectionMaterial);
   const [sectionMaterialToDelete, setSectinMaterialToDelete] = useState<SectionMaterial>({} as SectionMaterial)
 
-  // Состояния для выпадающих списков
-  const [materialInputValue, setMaterialInputValue] = useState("");
-  const [isMaterialMenuOpen, setIsMaterialMenuOpen] = useState(false);
-  const [selectedMaterial, setSelectedMaterial] = useState({} as Material);
+  // Состояние для модального окна удаления
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // Состояние для редактирования
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   // Данные для выпадающего списка
   const materialOptions: Option[] = materials.map((material) => ({
     value: material.id,
-    label: material.name,
+    label: `${material.name}, ${material.units}`,
   }));
 
   // Загрузка раздела и материалов
@@ -51,62 +53,98 @@ export function SectionMaterialsPage() {
     fetchData();
   }, [])
 
-  const editMode = () => { };
-  const deleteMode = () => { };
+  const handleSave = async (sectionMaterial: ChildrenMaterial) => {
+    setEditingId(null);
+    if (sectionMaterial.id <= 0) {
+      const createData: CreateSectionMaterialDTO = {
+        sectionId: Number(sectionId),
+        materialId: sectionMaterial.materialId,
+        volume: sectionMaterial.volume
+      }
+      const created = await sectionMaterialApi.create(createData)
+      if (created !== undefined) {
+        setSectionMaterials(
+          sectionMaterials.map((sm) => sm.id === sectionMaterial.id ? created : sm)
+        );
+      }
+    }
+  }
+
+  const handleCancel = () => {
+    setEditingId(null);
+  }
+
+  const addSectionMaterial = () => {
+    const sectionMaterial: SectionMaterial = {
+      id: getFreeId(sectionMaterials),
+      sectionId: Number(sectionId),
+      materialId: 0,
+      volume: '',
+      material: {} as Material,
+    }
+    setSectionMaterials([...sectionMaterials, sectionMaterial]);
+    setEditingId(sectionMaterial.id);
+  }
+
+  // Состояние удаления
+  const deleteMode = (sectionMaterial: SectionMaterial) => {
+    console.log(sectionMaterial);
+    setSectinMaterialToDelete(sectionMaterial);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Запрос на удаление паспорта и проверка его удаления
+  const confirmDelete = async (id: number) => {
+    const deleted = await sectionMaterialApi.delete(id);
+    if (deleted == 204) {
+      setSectionMaterials(sectionMaterials.filter((sm) => (sm.id !== id)));
+      setSectinMaterialToDelete({} as SectionMaterial);
+      setIsDeleteModalOpen(false);
+    } else {
+      setSectinMaterialToDelete({} as SectionMaterial);
+      setIsDeleteModalOpen(false);
+    }
+  }
+
 
   return (
     <div className="p-4">
       <h1 className="text-gray-800 text-center font-sans text-2xl mb-8">Объемы раздела "{section.name}"</h1>
 
-      <div className="shadow-lg rounded-lg inline-flex space-x-4 p-4 w-full" >
-        <div className="w-3/8">
-          <Select<Option>
-            options={materialOptions}
-            value={materialOptions.find((option) => option.value === createData.materialId) || null}
-            onChange={(option) => {
-              setCreateData({ ...createData, materialId: option?.value || '' });
-              setSelectedMaterial(materials.find((m) => m.id === option?.value) || {} as Material);
-            }}
-            inputValue={materialInputValue}
-            onInputChange={(value) => setMaterialInputValue(value)}
-            onMenuOpen={() => {
-              setIsMaterialMenuOpen(true);
-              setMaterialInputValue('');
-            }}
-            onMenuClose={() => {
-              setIsMaterialMenuOpen(false);
-              setMaterialInputValue('');
-            }}
-            menuIsOpen={isMaterialMenuOpen}
-            isSearchable={true}
-            isMulti={false}
-            className="h-10"
-            placeholder="Материал раздела" />
-        </div>
-        <div className="w-full">
-          {
-            (isUnitTranslatable(materials, createData.materialId)) ? (
-              <VolumeAndCapacityInput
-                volumeValue={createData.volume}
-                material={selectedMaterial || {} as Material}
-                onChange={(value: string) => setCreateData({ ...createData, volume: value })}
-                error=""
-              />
+      {sectionMaterials.map((sm) => {
+        return (
+          <MaterialFormRow
+            key={sm.id}
+            materials={materials}
+            materialOptions={materialOptions}
+            data={sm}
+            isEdit={sm.id === editingId}
+            onEdit={() => setEditingId(sm.id)}
+            onSave={handleSave}
+            onCancel={handleCancel}
+            onDelete={() => deleteMode(sm)}
+          />
+        )
+      })}
 
-            ) : (
-              <NumberInput
-                value={createData.volume}
-                onChange={(value: string) => setCreateData({ ...createData, volume: value })}
-                placeholder={`Объем, ${selectedMaterial.units || ''}` || ''}
-                error=""
-              />
-            )
-          }
-        </div>
-        <div className="min-w-fit flex items-center justify-center">
-          <ActionButtons onEdit={editMode} onDelete={deleteMode}></ActionButtons>
-        </div>
+
+
+      <div className="mt-8">
+        <Button onClick={addSectionMaterial} variant="modal">
+          Добавить материал
+        </Button>
       </div>
+
+      {/* Модальное окно подтверждения удаления материала */}
+      <SmallModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <h2 className="text-xl text-gray-700">Вы уверены, что хотите удалить следующий материал раздела: {sectionMaterialToDelete?.material?.name}?</h2>
+        <p className="text-gray-400 mb-8">Действие будет невозможно отменить</p>
+        <div className="flex gap-4">
+          <Button onClick={() => confirmDelete(sectionMaterialToDelete.id)} variant="danger">Удалить</Button>
+          <Button onClick={() => setIsDeleteModalOpen(false)} variant="modal">Отмена</Button>
+        </div>
+      </SmallModal>
+
     </div>
   )
 }

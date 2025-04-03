@@ -21,9 +21,11 @@ export interface UpdateSectionDTO {
 /**
  * Интерфейс создания материала привязанного к разделу
   * @property {number} materialId
+  * @property {number} sectionId
   * @property {string} volume
   */
 export interface CreateSectionMaterialDTO {
+  sectionId: number;
   materialId: number;
   volume: string;
 }

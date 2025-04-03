@@ -6,7 +6,7 @@ import { CreateSectionMaterialDTO, UpdateSectionMaterialDTO } from "../model/dto
 export const sectionMaterialApi = {
   get: async () => {
     try {
-      let response: AxiosResponse<SectionMaterial[]> = await api.get("/sectionMaterial");
+      let response: AxiosResponse<SectionMaterial[]> = await api.get("/section/material");
       return response.data;
     } catch (err) {
       console.error(err);
@@ -14,15 +14,16 @@ export const sectionMaterialApi = {
   },
   getById: async (id: number) => {
     try {
-      let response: AxiosResponse<SectionMaterial> = await api.get(`/sectionMaterial?id=${id}`);
+      let response: AxiosResponse<SectionMaterial> = await api.get(`/section/material/${id}`);
       return response.data;
     } catch (err) {
       console.error(err);
+      return false;
     }
   },
   create: async (data: CreateSectionMaterialDTO) => {
     try {
-      let response: AxiosResponse<SectionMaterial> = await api.post(`/sectionMaterial`, data);
+      let response: AxiosResponse<SectionMaterial> = await api.post(`/section/material`, data);
       return response.data;
     } catch (err) {
       console.error(err);
@@ -30,7 +31,7 @@ export const sectionMaterialApi = {
   },
   update: async (id: number, data: UpdateSectionMaterialDTO) => {
     try {
-      let response: AxiosResponse<SectionMaterial> = await api.patch(`/sectionMaterial/${id}`, data);
+      let response: AxiosResponse<SectionMaterial> = await api.patch(`/section/material/${id}`, data);
       return response.data;
     } catch (err) {
       console.error(err)
@@ -38,7 +39,7 @@ export const sectionMaterialApi = {
   },
   delete: async (id: number) => {
     try {
-      let response = await api.delete(`/sectionMaterial/${id}`);
+      let response = await api.delete(`/section/material/${id}`);
       return response.status;
     } catch (err) {
       console.error(err);

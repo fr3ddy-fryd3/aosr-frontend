@@ -3,16 +3,17 @@ import { isUnitTranslatable } from "../utils/material";
 import { VolumeAndCapacityInput, NumberInput } from "./Input";
 import { ActionButtons } from "./ActionButtons";
 import { Material } from "@/entities/material";
+import { ChildrenMaterial } from "@/entities/childrenMaterial";
 import { Option } from "@/entities/option";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 
 type MaterialFormProps = {
   materials: Material[];
   materialOptions: Option[];
-  data: any;
-  setData: (data: any) => void;
+  data: ChildrenMaterial;
   isEdit: boolean;
-  onSave: () => void;
+  onSave: (childrenMaterial: ChildrenMaterial) => void;
   onCancel: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -23,7 +24,6 @@ export function MaterialFormRow(
     materials,
     materialOptions,
     data,
-    setData,
     isEdit,
     onSave,
     onCancel,
@@ -31,18 +31,31 @@ export function MaterialFormRow(
     onDelete,
   }: MaterialFormProps
 ) {
-  const [selectedMaterial, setSelectedMaterial] = useState<Material>({} as Material);
+  const [childrenMaterial, setChildrenMaterial] = useState<ChildrenMaterial>(data);
+  const [selectedMaterial, setSelectedMaterial] = useState<Material>(data.material);
   const [materialInputValue, setMaterialInputValue] = useState('');
   const [isMaterialMenuOpen, setIsMaterialMenuOpen] = useState(false);
 
+  useEffect(() => {
+    setChildrenMaterial(data);
+    setSelectedMaterial(data.material);
+  }, [data])
+
+  const handleCancel = () => {
+    setChildrenMaterial(data);
+    setSelectedMaterial(data.material);
+    onCancel(); // Уведомляем родитель о отмене
+  };
+
   return (
-    <div className="shadow-lg rounded-lg inline-flex space-x-4 p-4 w-full" >
+    <div className={`transition rounded-lg border border-gray-200 inline-flex space-x-4 p-4 mb-4 w-full ${isEdit && "shadow-lg"}`} >
       <div className="w-3/8">
         <Select<Option>
+          isDisabled={!isEdit}
           options={materialOptions}
-          value={materialOptions.find((option) => option.value === data.materialId) || null}
+          value={materialOptions.find((option) => option.value === childrenMaterial.materialId) || null}
           onChange={(option) => {
-            setData({ ...data, materialId: option?.value || '' });
+            setChildrenMaterial({ ...childrenMaterial, materialId: option?.value || 0 })
             setSelectedMaterial(materials.find((m) => m.id === option?.value) || {} as Material);
           }}
           inputValue={materialInputValue}
@@ -63,26 +76,28 @@ export function MaterialFormRow(
       </div>
       <div className="w-full">
         {
-          (isUnitTranslatable(materials, data.materialId)) ? (
+          (isUnitTranslatable(materials, childrenMaterial.materialId)) ? (
             <VolumeAndCapacityInput
-              volumeValue={data.volume}
+              isDisabled={!isEdit}
+              volumeValue={childrenMaterial.volume}
               material={selectedMaterial || {} as Material}
-              onChange={(value: string) => setData({ ...data, volume: value })}
+              onChange={(value: string) => setChildrenMaterial({ ...childrenMaterial, volume: value })}
               error=""
             />
 
           ) : (
             <NumberInput
-              value={data.volume}
-              onChange={(value: string) => setData({ ...data, volume: value })}
-              placeholder={`Объем, ${selectedMaterial.units || ''}` || ''}
+              isDisabled={!isEdit}
+              value={childrenMaterial.volume}
+              onChange={(value: string) => setChildrenMaterial({ ...childrenMaterial, volume: value })}
+              placeholder={`Объем, ${selectedMaterial.units || ''}`}
               error=""
             />
           )
         }
       </div>
       <div className="min-w-fit flex items-center justify-center">
-        <ActionButtons isEdit={isEdit} onSave={onSave} onCancel={onCancel} onEdit={onEdit} onDelete={onDelete}></ActionButtons>
+        <ActionButtons isEdit={isEdit} onSave={() => onSave(childrenMaterial)} onCancel={handleCancel} onEdit={onEdit} onDelete={onDelete}></ActionButtons>
       </div>
     </div>
   )

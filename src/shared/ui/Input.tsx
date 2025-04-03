@@ -2,6 +2,7 @@ import { Material } from "@/entities/material";
 import { useState, useEffect } from "react";
 
 type InputProps = {
+  isDisabled?: boolean;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -11,17 +12,19 @@ type InputProps = {
 }
 
 type DoubleInputProps = {
+  isDisabled?: boolean;
   volumeValue: string;
   material: Material;
   onChange: (value: string) => void;
   error: string;
 }
 
-export function TextInput({ value, onChange, error, placeholder }: InputProps) {
+export function TextInput({ isDisabled, value, onChange, error, placeholder }: InputProps) {
   return (
     <>
       <input
-        className={`w-full h-10 p-2 border rounded-md ${error ? 'border-r-red-400' : 'border-gray-300'}`}
+        disabled={isDisabled}
+        className={`w-full transition h-10 p-2 border rounded-md ${error ? 'border-r-red-400' : 'border-gray-300'} ${isDisabled ? 'bg-gray-100 text-gray-400' : ''}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -31,11 +34,12 @@ export function TextInput({ value, onChange, error, placeholder }: InputProps) {
   )
 }
 
-export function NumberInput({ value, onChange, onBlur, error, placeholder, halfWidth }: InputProps) {
+export function NumberInput({ isDisabled, value, onChange, onBlur, error, placeholder, halfWidth }: InputProps) {
   return (
     <>
       <input
-        className={`p-2 h-10 border rounded-md ${halfWidth ? 'w-1/2' : 'w-full'} ${error ? 'border-r-red-400' : 'border-gray-300'}`}
+        disabled={isDisabled}
+        className={`p-2 h-10 transition border rounded-md ${halfWidth ? 'w-1/2' : 'w-full'} ${error ? 'border-r-red-400' : 'border-gray-300'} ${isDisabled ? 'bg-gray-100 text-gray-400' : ''}`}
         value={value}
         onChange={(e) => {
           const rawValue = e.target.value.replace(/[^0-9.,]/g, '');
@@ -51,7 +55,7 @@ export function NumberInput({ value, onChange, onBlur, error, placeholder, halfW
   )
 }
 
-export function VolumeAndCapacityInput({ volumeValue, material, onChange, error }: DoubleInputProps) {
+export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onChange, error }: DoubleInputProps) {
 
   const capacityToWeight = (capacity: string) => {
     const result = parseFloat(capacity) * parseFloat(material.density);
@@ -109,6 +113,7 @@ export function VolumeAndCapacityInput({ volumeValue, material, onChange, error 
   return (
     <div className="flex space-x-4">
       <NumberInput
+        isDisabled={isDisabled}
         value={localVolume}
         onChange={handleVolumeChange}
         onBlur={handleBlur}
@@ -117,6 +122,7 @@ export function VolumeAndCapacityInput({ volumeValue, material, onChange, error 
         halfWidth={true}
       />
       <NumberInput
+        isDisabled={isDisabled}
         value={localWeight}
         onChange={handleWeightChange}
         onBlur={handleBlur}

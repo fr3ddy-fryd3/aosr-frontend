@@ -7,7 +7,7 @@ type ButtonProps = {
 }
 
 export function Button({ onClick, children, variant = 'primary' }: ButtonProps) {
-  const baseStyles = 'w-fit h-fit px-8 py-2 rounded-md font-medium transition';
+  const baseStyles = 'w-fit h-10 px-8 py-2 rounded-md font-medium transition';
   const variantStyles = {
     primary: 'text-gray-700 border border-gray-700 hover:text-white hover:bg-gray-700',
     danger: 'text-red-400 bg-white border border-red-400 hover:text-white hover:bg-red-400 w-full',

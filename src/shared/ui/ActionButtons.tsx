@@ -13,7 +13,7 @@ export function ActionButtons({ isEdit, onSave, onCancel, onEdit, onDelete }: Ac
         <img src="/ok.svg" alt="Edit" className="w-6 h-6 p-1 bg-green-400 hover:bg-green-500 rounded-full transition" />
       </button>
       <button className="flex items-center" onClick={onCancel}>
-        <img src="/x.svg" alt="Cancel" className="w-6 h-6 p-1 bg-red-400 hover:bg-red-500 rounded-full transition" />
+        <img src="/x.svg" alt="Cancel" className="w-6 h-6 p-1.5 bg-red-400 hover:bg-red-500 rounded-full transition" />
       </button>
     </div>
 
