@@ -1,4 +1,4 @@
-import { Material } from "@/entities/material";
+import { SectionMaterial } from "./section";
 
 /**
   * Интерфейс для актов освидетельствования скрытых работ
@@ -18,7 +18,7 @@ export interface Aosr {
   * Интерфейс для материалов АОСР
   * @property {number} id
   * @property {number} aosrId
-  * @property {number} materialId
+  * @property {number} sectionMaterialId
   * @property {string} volume
   * @property {string} usedVolume
   * @property {Material} material
@@ -26,8 +26,8 @@ export interface Aosr {
 export interface AosrMaterial {
   id: number;
   aosrId: number;
-  materialId: number;
+  sectionMaterialId: number;
   volume: string;
   usedVolume: string;
-  material: Material;
+  sectionMaterial: SectionMaterial;
 }

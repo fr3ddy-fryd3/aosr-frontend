@@ -2,7 +2,7 @@ import { Material } from "@/entities/material";
 import { ChildrenMaterial } from "@/entities/childrenMaterial";
 
 // По ID материала определяет могут ли ед.изм. быть переведены (м³ <-> т)
-export const isUnitTranslatable = (materials: Material[], id: number) => {
+export const isUnitTranslatable = (materials: Material[] | undefined, id: number | undefined) => {
   if (materials === undefined || id === undefined) return false;
   let material = materials.find((m) => m.id === id)
 

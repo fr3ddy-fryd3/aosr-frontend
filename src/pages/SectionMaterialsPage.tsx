@@ -1,20 +1,17 @@
+import { ChildrenMaterial } from "@/entities/childrenMaterial";
 import { Material } from "@/entities/material";
 import { Option } from "@/entities/option";
 import { Section, SectionMaterial } from "@/entities/section";
-import { ChildrenMaterial } from "@/entities/childrenMaterial";
 import { materialApi } from "@/shared/api/material";
 import { sectionApi } from "@/shared/api/section";
-import { CreateSectionMaterialDTO, UpdateSectionMaterialDTO } from "@/shared/model/dto/section";
-import { ActionButtons } from "@/shared/ui/ActionButtons";
-import { Button } from "@/shared/ui/Button";
-import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
-import { MaterialFormRow } from "@/shared/ui/MaterialFormRow";
-import { getFreeId, isUnitTranslatable } from "@/shared/utils/material";
-import { ReactNode, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Select from "react-select/base";
-import { SmallModal } from "@/shared/ui/Modal";
 import { sectionMaterialApi } from "@/shared/api/sectionMaterial";
+import { CreateSectionMaterialDTO, UpdateSectionMaterialDTO } from "@/shared/model/dto/section";
+import { Button } from "@/shared/ui/Button";
+import { SectionMaterialFormRow } from "@/shared/ui/SectionMaterialFormRow";
+import { SmallModal } from "@/shared/ui/Modal";
+import { getFreeId } from "@/shared/utils/material";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 
 export function SectionMaterialsPage() {
@@ -53,6 +50,7 @@ export function SectionMaterialsPage() {
     fetchData();
   }, [])
 
+  // Обработка создания/удаления материалов раздела
   const handleSave = async (sectionMaterial: ChildrenMaterial) => {
     setEditingId(null);
     if (sectionMaterial.id <= 0) {
@@ -67,13 +65,27 @@ export function SectionMaterialsPage() {
           sectionMaterials.map((sm) => sm.id === sectionMaterial.id ? created : sm)
         );
       }
+    } else {
+      const updateData: UpdateSectionMaterialDTO = {
+        materialId: sectionMaterial.materialId,
+        volume: sectionMaterial.volume,
+      }
+      const updated = await sectionMaterialApi.update(sectionMaterial.id, updateData);
+      if (updated !== undefined) {
+        setSectionMaterials(
+          sectionMaterials.map((sm) => sm.id === sectionMaterial.id ? updated : sm)
+        );
+      }
     }
   }
 
+  // Обработка отмены действий редактирования
   const handleCancel = () => {
     setEditingId(null);
   }
 
+  // Добавление материала раздела в общий массив для
+  // последующего добавления в базу данных
   const addSectionMaterial = () => {
     const sectionMaterial: SectionMaterial = {
       id: getFreeId(sectionMaterials),
@@ -88,15 +100,18 @@ export function SectionMaterialsPage() {
 
   // Состояние удаления
   const deleteMode = (sectionMaterial: SectionMaterial) => {
-    console.log(sectionMaterial);
     setSectinMaterialToDelete(sectionMaterial);
     setIsDeleteModalOpen(true);
   };
 
-  // Запрос на удаление паспорта и проверка его удаления
+  // Запрос на удаление материала раздела и проверка его удаления
   const confirmDelete = async (id: number) => {
     const deleted = await sectionMaterialApi.delete(id);
-    if (deleted == 204) {
+    if (deleted == 204 && id > 0) {
+      setSectionMaterials(sectionMaterials.filter((sm) => (sm.id !== id)));
+      setSectinMaterialToDelete({} as SectionMaterial);
+      setIsDeleteModalOpen(false);
+    } if (id <= 0) {
       setSectionMaterials(sectionMaterials.filter((sm) => (sm.id !== id)));
       setSectinMaterialToDelete({} as SectionMaterial);
       setIsDeleteModalOpen(false);
@@ -109,11 +124,13 @@ export function SectionMaterialsPage() {
 
   return (
     <div className="p-4">
+      {/* Заголовок */}
       <h1 className="text-gray-800 text-center font-sans text-2xl mb-8">Объемы раздела "{section.name}"</h1>
 
+      {/* Список материалов раздела */}
       {sectionMaterials.map((sm) => {
         return (
-          <MaterialFormRow
+          <SectionMaterialFormRow
             key={sm.id}
             materials={materials}
             materialOptions={materialOptions}
@@ -127,8 +144,7 @@ export function SectionMaterialsPage() {
         )
       })}
 
-
-
+      {/* Кнопка добавления материала */}
       <div className="mt-8">
         <Button onClick={addSectionMaterial} variant="modal">
           Добавить материал

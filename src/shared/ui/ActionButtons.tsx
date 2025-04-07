@@ -1,4 +1,5 @@
 type ActionButtonsProps = {
+  isAosrMaterial?: boolean;
   isEdit: boolean;
   onSave?: () => void;
   onCancel?: () => void;
@@ -6,7 +7,7 @@ type ActionButtonsProps = {
   onDelete: () => void;
 }
 
-export function ActionButtons({ isEdit, onSave, onCancel, onEdit, onDelete }: ActionButtonsProps) {
+export function ActionButtons({ isAosrMaterial, isEdit, onSave, onCancel, onEdit, onDelete }: ActionButtonsProps) {
   return isEdit ? (
     <div className="flex items-center justify-end gap-2">
       <button className="flex items-center" onClick={onSave}>
@@ -22,7 +23,7 @@ export function ActionButtons({ isEdit, onSave, onCancel, onEdit, onDelete }: Ac
       <button className="flex items-center" onClick={onEdit}>
         <img src="/edit.svg" alt="Edit" className="w-6 h-6 p-1 bg-green-400 hover:bg-green-500 rounded-full transition" />
       </button>
-      <button className="flex items-center" onClick={onDelete}>
+      <button className="flex items-center" onClick={onDelete} hidden={isAosrMaterial}>
         <img src="/delete.svg" alt="Delete" className="w-6 h-6 p-1 bg-red-400 hover:bg-red-500 rounded-full transition" />
       </button>
     </div>

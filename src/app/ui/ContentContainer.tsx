@@ -5,6 +5,7 @@ import { ProjectsPage } from "@/pages/ProjectsPage"
 import { ProjectSectionsPage } from "@/pages/ProjectSectionsPage"
 import { SectionAosrsPage } from "@/pages/SectionAosrsPage"
 import { SectionMaterialsPage } from "@/pages/SectionMaterialsPage"
+import { AosrMaterialsPage } from "@/pages/AosrMaterialsPage"
 
 export default function ContentContainer() {
   return (
@@ -13,7 +14,7 @@ export default function ContentContainer() {
         <Route path="/project/:projectId" element={<ProjectSectionsPage />} />
         <Route path="/section/:sectionId" element={<SectionAosrsPage />} />
         <Route path="/section/:sectionId/materials" element={<SectionMaterialsPage />} />
-        {/* <Route path="/aosr/:aosrId" element={ } /> */}
+        <Route path="/aosr/:aosrId" element={<AosrMaterialsPage />} />
         <Route path="/materials" element={<MaterialsPage />} />
         <Route path="/passports" element={<PassportsPage />} />
         <Route path="/" element={<ProjectsPage />} />

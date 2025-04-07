@@ -20,20 +20,22 @@ export interface UpdateAosrDTO {
 
 /**
  * Интерфейс создания материалов привязанных к АОСР
-  * @property {number} materialId
+  * @property {number} aosrId
+  * @property {number} sectionMaterialId
   * @property {string} volume
   */
-interface CreateAosrMaterialDTO {
-  materialId: number;
+export interface CreateAosrMaterialDTO {
+  aosrId: number;
+  sectionMaterialId: number;
   volume: string;
 }
 
 /**
  * Интерфейс обновления материалов привязанных к АОСР
   * @property {string} volume?
-  * @property {number} materialId?
+  * @property {number} sectionMaterialId?
   */
 export interface UpdateAosrMaterialDTO {
-  materialId: number;
+  sectionMaterialId: number;
   volume?: string;
 }
