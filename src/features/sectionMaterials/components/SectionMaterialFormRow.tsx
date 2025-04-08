@@ -1,25 +1,25 @@
-import { ChildrenMaterial } from "@/entities/childrenMaterial";
 import { Material } from "@/entities/material";
+import { SectionMaterial } from "@/entities/section";
 import { Option } from "@/entities/option";
 import { useEffect, useState } from "react";
 import Select from "react-select/base";
-import { isUnitTranslatable } from "../utils/material";
-import { ActionButtons } from "./ActionButtons";
-import { NumberInput, VolumeAndCapacityInput } from "./Input";
+import { isUnitTranslatable } from "@/shared/utils/material";
+import { ActionButtons } from "@/shared/ui/ActionButtons";
+import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
 
 
-type AosrMaterialFormProps = {
+type SectionMaterialFormProps = {
   materials: Material[];
   materialOptions: Option[];
-  data: ChildrenMaterial;
+  data: SectionMaterial;
   isEdit: boolean;
-  onSave: (childrenMaterial: ChildrenMaterial) => void;
+  onSave: (childrenMaterial: SectionMaterial) => void;
   onCancel: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-export function AosrMaterialFormRow(
+export function SectionMaterialFormRow(
   {
     materials,
     materialOptions,
@@ -29,36 +29,29 @@ export function AosrMaterialFormRow(
     onCancel,
     onEdit,
     onDelete,
-  }: AosrMaterialFormProps
+  }: SectionMaterialFormProps
 ) {
   // Объект редактирования
-  const [childrenMaterial, setChildrenMaterial] = useState<ChildrenMaterial>(data);
+  const [childrenMaterial, setSectionMaterial] = useState<SectionMaterial>(data);
 
   // Состояния для выпадающего списка
-  const [selectedMaterial, setSelectedMaterial] = useState<Material>(data.sectionMaterial.material);
+  const [selectedMaterial, setSelectedMaterial] = useState<Material>(data.material);
   const [materialInputValue, setMaterialInputValue] = useState('');
   const [isMaterialMenuOpen, setIsMaterialMenuOpen] = useState(false);
 
   // Обновление данных при изменении списка материалов
   // в родительском компоненте
   useEffect(() => {
-    setChildrenMaterial(data);
-    setSelectedMaterial(data.sectionMaterial.material);
+    setSectionMaterial(data);
+    setSelectedMaterial(data.material);
   }, [data])
 
   // Обработка отмены редактирования
   const handleCancel = () => {
-    setChildrenMaterial(data);
-    setSelectedMaterial(data.sectionMaterial.material);
+    setSectionMaterial(data);
+    setSelectedMaterial(data.material);
     onCancel(); // Уведомляем родитель о отмене
   };
-
-  const getValueOfSelect = () => {
-    let value: Option | undefined;
-    value = materialOptions.find((option) => option.value === childrenMaterial.sectionMaterial.materialId)
-
-    return value;
-  }
 
   return (
     <div className={`transition rounded-lg border border-gray-200 inline-flex space-x-4 p-4 mb-4 w-full ${isEdit && "shadow-lg"}`} >
@@ -66,13 +59,13 @@ export function AosrMaterialFormRow(
 
         {/* Селектор материала */}
         <Select<Option>
-          isDisabled={true}
+          isDisabled={!isEdit}
           options={materialOptions}
           value={materialOptions.find((option) =>
-            option.value === childrenMaterial.sectionMaterial.materialId
+            option.value === childrenMaterial.materialId
           ) || null}
           onChange={(option) => {
-            setChildrenMaterial({ ...childrenMaterial, materialId: option?.value || 0 })
+            setSectionMaterial({ ...childrenMaterial, materialId: option?.value || 0 })
             setSelectedMaterial(materials.find((m) => m.id === option?.value) || {} as Material);
           }}
           inputValue={materialInputValue}
@@ -95,12 +88,12 @@ export function AosrMaterialFormRow(
 
         {/* Поле ввода объемов (веса) */}
         {
-          (isUnitTranslatable(materials, childrenMaterial.sectionMaterial.materialId)) ? (
+          (isUnitTranslatable(materials, childrenMaterial.materialId)) ? (
             <VolumeAndCapacityInput
               isDisabled={!isEdit}
               volumeValue={childrenMaterial.volume}
               material={selectedMaterial || {} as Material}
-              onChange={(value: string) => setChildrenMaterial({ ...childrenMaterial, volume: value })}
+              onChange={(value: string) => setSectionMaterial({ ...childrenMaterial, volume: value })}
               error=""
             />
 
@@ -108,7 +101,7 @@ export function AosrMaterialFormRow(
             <NumberInput
               isDisabled={!isEdit}
               value={childrenMaterial.volume}
-              onChange={(value: string) => setChildrenMaterial({ ...childrenMaterial, volume: value })}
+              onChange={(value: string) => setSectionMaterial({ ...childrenMaterial, volume: value })}
               placeholder={`Объем, ${selectedMaterial.units || ''}`}
               error=""
             />
@@ -118,7 +111,7 @@ export function AosrMaterialFormRow(
 
       {/* Кнопки редактирования/сохранения/отмены редактирования/удаления */}
       <div className="min-w-fit flex items-center justify-center">
-        <ActionButtons isAosrMaterial={true} isEdit={isEdit} onSave={() => onSave(childrenMaterial)} onCancel={handleCancel} onEdit={onEdit} onDelete={onDelete}></ActionButtons>
+        <ActionButtons isEdit={isEdit} onSave={() => onSave(childrenMaterial)} onCancel={handleCancel} onEdit={onEdit} onDelete={onDelete}></ActionButtons>
       </div>
     </div>
   )

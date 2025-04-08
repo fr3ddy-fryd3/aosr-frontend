@@ -1,3 +1,4 @@
+import { PassportUsage } from "./passport";
 import { SectionMaterial } from "./section";
 
 /**
@@ -22,6 +23,7 @@ export interface Aosr {
   * @property {string} volume
   * @property {string} usedVolume
   * @property {Material} material
+  * @property {PassportUsage[]} passportUsages
   */
 export interface AosrMaterial {
   id: number;
@@ -30,4 +32,5 @@ export interface AosrMaterial {
   volume: string;
   usedVolume: string;
   sectionMaterial: SectionMaterial;
+  passportUsages: PassportUsage[];
 }

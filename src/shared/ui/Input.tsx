@@ -11,7 +11,7 @@ type InputProps = {
   halfWidth?: boolean;
 }
 
-type DoubleInputProps = {
+type VolumeAndCapacityInputProps = {
   isDisabled?: boolean;
   volumeValue: string;
   material: Material;
@@ -55,7 +55,7 @@ export function NumberInput({ isDisabled, value, onChange, onBlur, error, placeh
   )
 }
 
-export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onChange, error }: DoubleInputProps) {
+export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onChange, error }: VolumeAndCapacityInputProps) {
 
   const capacityToWeight = (capacity: string) => {
     const result = parseFloat(capacity) * parseFloat(material.density);

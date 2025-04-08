@@ -7,7 +7,7 @@ import { sectionApi } from "@/shared/api/section";
 import { sectionMaterialApi } from "@/shared/api/sectionMaterial";
 import { CreateSectionMaterialDTO, UpdateSectionMaterialDTO } from "@/shared/model/dto/section";
 import { Button } from "@/shared/ui/Button";
-import { SectionMaterialFormRow } from "@/shared/ui/SectionMaterialFormRow";
+import { SectionMaterialFormRow } from "@/features/sectionMaterials/components/SectionMaterialFormRow";
 import { SmallModal } from "@/shared/ui/Modal";
 import { getFreeId } from "@/shared/utils/material";
 import { useEffect, useState } from "react";

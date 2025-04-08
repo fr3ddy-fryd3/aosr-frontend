@@ -1,29 +1,40 @@
 interface ProgressBarProps {
   current: number;
   max: number;
+  units: string;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ current, max }) => {
+export const ProgressBar = ({ current, max, units }: ProgressBarProps) => {
   // Вычисляем процент заполнения
   const percentage = Math.min((current / max) * 100, 100);
-  // Определяем цвет: зелёный при 100%, иначе синий
-  const fillColor = percentage === 100 ? "bg-green-500" : "bg-blue-500";
+  let fillColor;
+  let textColor;
+
+  if (current < max) {
+    fillColor = "bg-blue-400";
+    textColor = "text-blue-800";
+  } else if (current === max) {
+    fillColor = "bg-green-400";
+    textColor = "text-green-800";
+  } else {
+    fillColor = "bg-red-400";
+    textColor = "text-red-800";
+  }
 
   return (
-    <div className="relative w-full h-6 bg-gray-200 rounded">
-      {/* Заполненная часть */}
-      <div
-        className={`h-full ${fillColor} rounded transition-all duration-300`}
-        style={{ width: `${percentage}%` }}
-      />
+    <>
       {/* Числа слева и справа */}
-      <div className="absolute inset-0 flex justify-between items-center px-2 text-sm text-gray-800">
-        <span>{current}</span>
-        <span>{max}</span>
+      <div className={`inset-0 flex justify-between items-center px-2 text ${textColor}`}>
+        <span>{current} {units}</span>
+        <span>{max} {units}</span>
+      </div >
+      <div className="relative w-full h-3 bg-gray-200 rounded-full">
+        {/* Заполненная часть */}
+        <div
+          className={`h-3 ${fillColor} rounded-full transition-all duration-300`}
+          style={{ width: `${percentage}%` }}
+        />
       </div>
-    </div>
+    </>
   );
 };
-
-// Использование
-<ProgressBar current={75} max={100} />;
