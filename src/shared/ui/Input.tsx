@@ -17,8 +17,9 @@ type VolumeAndCapacityInputProps = {
   volumeValue: string;
   material: Material;
   onChange: (value: string) => void;
+  availableVolumeInfo?: string;
+  currentVolume?: string;
   error: string;
-  info?: string;
 }
 
 export function TextInput({ isDisabled, value, onChange, error, placeholder }: InputProps) {
@@ -50,14 +51,14 @@ export function NumberInput({ isDisabled, value, onChange, onBlur, error, placeh
           if (/^[0-9]*[.,]?[0-9]*$/.test(rawValue)) onChange(normalizeValue);
         }}
         onBlur={onBlur}
-        placeholder={placeholder}
+        placeholder={info ? `Доступно: ${info}` : placeholder}
       />
       {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
     </>
   )
 }
 
-export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onChange, info, error }: VolumeAndCapacityInputProps) {
+export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onChange, availableVolumeInfo, currentVolume, error }: VolumeAndCapacityInputProps) {
 
   const capacityToWeight = (capacity: string) => {
     const result = parseFloat(capacity) * parseFloat(material.density);
@@ -119,7 +120,13 @@ export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onCh
         value={localVolume}
         onChange={handleVolumeChange}
         onBlur={handleBlur}
-        placeholder={"Объем, " + units[0]}
+        placeholder={
+          availableVolumeInfo ?
+            `Доступно: ${availableVolumeInfo} ${units[0]}` :
+            currentVolume ?
+              `${currentVolume} ${units[0]}` :
+              `Объем, ${units[0]}`
+        }
         error={error}
         halfWidth={true}
       />
@@ -130,7 +137,13 @@ export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onCh
         value={localWeight}
         onChange={handleWeightChange}
         onBlur={handleBlur}
-        placeholder={"Вес, " + units[1]}
+        placeholder={
+          availableVolumeInfo ?
+            `Доступно: ${capacityToWeight(availableVolumeInfo || '')} ${units[1]}` :
+            currentVolume ?
+              `${capacityToWeight(currentVolume)} ${units[1]}` :
+              `Вес, ${units[1]}`
+        }
         error={error}
         halfWidth={true}
       />

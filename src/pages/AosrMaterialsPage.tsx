@@ -1,15 +1,16 @@
-import { useParams } from "react-router-dom";
-import { useAosrMaterialsData } from "@/features/aosrMaterials/hooks/useAosrMaterialsData";
-import { useAosrMaterialsActions } from "@/features/aosrMaterials/hooks/useAosrMaterialsActions";
-import { AosrMaterialFormRow } from "@/features/aosrMaterials/components/AosrMaterialFormRow";
-import { DeleteAosrMaterialModal } from "@/features/aosrMaterials/components/DeleteAosrMaterialModal";
-import { BindPassportModal } from "@/features/aosrMaterials/components/BindPassportUsageModal";
-import { EditPassportModal } from "@/features/aosrMaterials/components/EditPassportUsageModal";
+import { AosrMaterial } from "@/entities/aosr";
 import { Option } from "@/entities/option";
-import { PassportUsage } from "@/entities/passport";
-import { CreatePassportUsageDTO, UpdatePassportUsageDTO } from "@/shared/model/dto/passport";
+import { Passport, PassportUsage } from "@/entities/passport";
+import { AosrMaterialFormRow } from "@/features/aosrMaterials/components/AosrMaterialFormRow";
+import { BindPassportModal } from "@/features/aosrMaterials/components/BindPassportUsageModal";
+import { DeleteAosrMaterialModal } from "@/features/aosrMaterials/components/DeleteAosrMaterialModal";
+import { EditPassportModal } from "@/features/aosrMaterials/components/EditPassportUsageModal";
+import { useAosrMaterialsActions } from "@/features/aosrMaterials/hooks/useAosrMaterialsActions";
+import { useAosrMaterialsData } from "@/features/aosrMaterials/hooks/useAosrMaterialsData";
 import { passportUsageApi } from "@/shared/api/passportUsage";
+import { CreatePassportUsageDTO, UpdatePassportUsageDTO } from "@/shared/model/dto/passport";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 export function AosrMaterialsPage() {
   const { aosrId } = useParams();
@@ -31,6 +32,14 @@ export function AosrMaterialsPage() {
   const [createPassportUsageData, setCreatePassportUsageData] = useState<CreatePassportUsageDTO>({} as CreatePassportUsageDTO);
   const [updatePassportUsageData, setUpdatePassportUsageData] = useState<UpdatePassportUsageDTO>({} as UpdatePassportUsageDTO);
   const [selectedAosrMaterialId, setSelectedAosrMaterialId] = useState(0);
+
+  const passportsMap = new Map<number, Passport>(
+    passports.map(passport => [passport.id, passport])
+  );
+
+  const aosrMaterialsMap = new Map<number, AosrMaterial>(
+    aosrMaterials.map(material => [material.id, material])
+  );
 
   const materialOptions: Option[] = materials.map((material) => ({
     value: material.id,
@@ -88,8 +97,6 @@ export function AosrMaterialsPage() {
             : material
         )
       ]);
-      console.log(updatePassportUsageData.id);
-      console.log(aosrMaterials);
       setIsEditPassportModalOpen(false);
       setUpdatePassportUsageData({} as UpdatePassportUsageDTO);
     }
@@ -118,6 +125,8 @@ export function AosrMaterialsPage() {
           key={am.id}
           materials={materials}
           materialOptions={materialOptions}
+          passportsMap={passportsMap}
+          aosrMaterialsMap={aosrMaterialsMap}
           data={am}
           isEdit={am.id === editingAosrId}
           onEdit={() => setEditingAosrId(am.id)}

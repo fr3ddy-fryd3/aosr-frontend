@@ -13,7 +13,7 @@ export function MaterialRow({ material, editMode: editMode, deleteMode: deleteMo
     <tr>
       <TableCell>{material.name}</TableCell>
       <TableCell>{material.units}</TableCell>
-      <TableCell>{material.density}</TableCell>
+      <TableCell>{material.density == '0' ? '-' : material.density}</TableCell>
       <th className="p-4 border-b border-slate-200 w-fit">
         <div className="flex justify-end items-center">
           <ActionButtons onEdit={() => editMode(material)} onDelete={() => deleteMode(material)} />

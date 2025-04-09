@@ -1,6 +1,7 @@
 import { Passport } from "@/entities/passport"
 import { ActionButtons } from "@/shared/ui/ActionButtons";
 import { TableCell } from "@/shared/ui/TableCell";
+import { isUnitTranslatable } from "@/shared/utils/material";
 
 type PassportRowProps = {
   passport: Passport;
@@ -9,7 +10,10 @@ type PassportRowProps = {
 }
 
 export function PassportRow({ passport, editMode: editMode, deleteMode: deleteMode }: PassportRowProps) {
-  const units = passport.material.units.split('/');
+  let units: string[] | undefined;
+  if (passport.material?.units.search('/') !== -1) {
+    units = passport.material.units.split('/');
+  }
 
   const getWeight = (vol: string) => {
     let volume = Number(vol);
@@ -18,7 +22,7 @@ export function PassportRow({ passport, editMode: editMode, deleteMode: deleteMo
   }
 
   const volumeCell = (vol: string) => {
-    return `${vol} ${units[0]} / ${getWeight(vol)} ${units[1]}`
+    return units ? `${vol} ${units[0]} / ${getWeight(vol)} ${units[1]}` : `${vol} ${passport.material.units}`
   }
   return (
     <tr>

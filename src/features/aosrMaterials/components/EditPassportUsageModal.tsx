@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Option } from "@/entities/option";
 import { Material } from "@/entities/material";
 import { Passport } from "@/entities/passport";
@@ -39,6 +39,12 @@ export function EditPassportModal({
     label: `№${passport.number}`,
   }));
 
+  useEffect(() => {
+    setSelectedPassport(
+      passportOptions.find((po) => po.value.id === updatePassportUsageData.passportId)?.value || {} as Passport
+    )
+  }, [updatePassportUsageData])
+
   return (
     <SmallModal
       isOpen={isOpen}
@@ -69,7 +75,7 @@ export function EditPassportModal({
             material={selectedPassport.material}
             onChange={(value) => setUpdatePassportUsageData({ ...updatePassportUsageData, usedVolume: Number(value) })}
             error=""
-            info={"400"}
+            availableVolumeInfo={selectedPassport.availableVolume}
           />
         ) : (
           <NumberInput
@@ -77,6 +83,7 @@ export function EditPassportModal({
             onChange={(value) => setUpdatePassportUsageData({ ...updatePassportUsageData, usedVolume: Number(value) })}
             error=""
             placeholder={`Объем, ${selectedPassport.material?.units || ""}`}
+            info={selectedPassport.availableVolume}
           />
         )}
         <div className="flex gap-4">

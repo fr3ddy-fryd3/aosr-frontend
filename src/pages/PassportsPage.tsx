@@ -228,6 +228,7 @@ export function PassportsPage() {
                 material={selectedMaterial}
                 onChange={(value: string) => setUpdateData({ ...updateData, volume: value })}
                 error=""
+                currentVolume={passportToUpdate.volume}
               />
 
             ) : (

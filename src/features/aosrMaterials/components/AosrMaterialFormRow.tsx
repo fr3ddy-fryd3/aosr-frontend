@@ -8,12 +8,14 @@ import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
 import { ProgressBar } from "@/shared/ui/ProgressBar";
 import { AosrMaterial } from "@/entities/aosr";
 import { Tag } from "@/shared/ui/Tag";
-import { PassportUsage } from "@/entities/passport";
+import { Passport, PassportUsage } from "@/entities/passport";
 
 
 type AosrMaterialFormProps = {
   materials: Material[];
   materialOptions: Option[];
+  passportsMap: Map<number, Passport>;
+  aosrMaterialsMap: Map<number, AosrMaterial>;
   data: AosrMaterial;
   isEdit: boolean;
   onSave: (aosrMaterial: AosrMaterial) => void;
@@ -28,6 +30,8 @@ export function AosrMaterialFormRow(
   {
     materials,
     materialOptions,
+    passportsMap,
+    aosrMaterialsMap,
     data,
     isEdit,
     onSave,
@@ -123,14 +127,14 @@ export function AosrMaterialFormRow(
         {aosrMaterial.passportUsages.map((pu) => (
           <Tag
             key={pu.id}
-            name={pu.id.toString()}
-            value={pu.usedVolume.toString()}
+            name={`№${passportsMap.get(pu.passportId)?.number.toString()}`}
+            value={`${pu.usedVolume.toString()} ${aosrMaterialsMap.get(pu.aosrMaterialId)?.sectionMaterial.material.units}`}
             onClick={() => onPassportUsageEdit(aosrMaterial.id, pu)}
           />
         ))}
         {/* Кнопка привязки паспорта */}
         <button
-          className="bg-blue-300 hover:bg-blue-400 text-blue-800 rounded-full aspect-square h-7"
+          className="bg-blue-300 hover:bg-blue-400 text-blue-800 cursor-pointer rounded-full aspect-square h-7"
           onClick={() => onPassportUsageBind(aosrMaterial.id)}
         >
           +

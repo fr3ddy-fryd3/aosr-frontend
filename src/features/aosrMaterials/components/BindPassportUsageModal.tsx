@@ -30,7 +30,6 @@ export function BindPassportModal({
   setCreatePassportUsageData,
   onSave,
   aosrId,
-  aosrMaterialId,
 }: BindPassportModalProps) {
   const [passportInputValue, setPassportInputValue] = useState("");
   const [isPassportMenuOpen, setIsPassportMenuOpen] = useState(false);
@@ -38,13 +37,12 @@ export function BindPassportModal({
 
   const passportOptions: Option[] = passports.map((passport) => ({
     value: passport,
-    label: `№${passport.number}`,
+    label: `№${passport.number} - ${passport.material.name}`,
   }));
 
   return (
     <SmallModal isOpen={isOpen} onClose={() => {
       onClose();
-      setSelectedPassport({} as Passport);
     }}>
       <div className="space-y-4">
         <Select<Option>
@@ -68,7 +66,7 @@ export function BindPassportModal({
             material={selectedPassport.material}
             onChange={(value) => setCreatePassportUsageData({ ...createPassportUsageData, usedVolume: value })}
             error=""
-            info={selectedPassport.availableVolume}
+            availableVolumeInfo={selectedPassport.availableVolume}
           />
         ) : (
           <NumberInput
@@ -76,9 +74,18 @@ export function BindPassportModal({
             onChange={(value) => setCreatePassportUsageData({ ...createPassportUsageData, usedVolume: value })}
             error=""
             placeholder={`Объем, ${selectedPassport.material?.units || ""}`}
+            info={selectedPassport.availableVolume}
           />
         )}
-        <Button onClick={() => onSave(aosrId)} variant="modal">Сохранить</Button>
+        <Button
+          onClick={() => {
+            onSave(aosrId);
+            setSelectedPassport({} as Passport);
+          }}
+          variant="modal"
+        >
+          Сохранить
+        </Button>
       </div>
     </SmallModal>
   );
