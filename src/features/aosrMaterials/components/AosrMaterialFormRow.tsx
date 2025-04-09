@@ -20,8 +20,8 @@ type AosrMaterialFormProps = {
   onCancel: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  onPassportUsageBind: () => void;
-  onPassportUsageEdit: (passportUsage: PassportUsage) => void;
+  onPassportUsageBind: (aosrMaterialId: number) => void;
+  onPassportUsageEdit: (aosrMaterialId: number, passportUsage: PassportUsage) => void;
 }
 
 export function AosrMaterialFormRow(
@@ -125,11 +125,16 @@ export function AosrMaterialFormRow(
             key={pu.id}
             name={pu.id.toString()}
             value={pu.usedVolume.toString()}
-            onClick={() => onPassportUsageEdit(pu)}
+            onClick={() => onPassportUsageEdit(aosrMaterial.id, pu)}
           />
         ))}
         {/* Кнопка привязки паспорта */}
-        <button className="bg-blue-300 hover:bg-blue-400 text-blue-800 rounded-full aspect-square h-6" onClick={onPassportUsageBind}>+</button>
+        <button
+          className="bg-blue-300 hover:bg-blue-400 text-blue-800 rounded-full aspect-square h-7"
+          onClick={() => onPassportUsageBind(aosrMaterial.id)}
+        >
+          +
+        </button>
       </div>
 
     </div >

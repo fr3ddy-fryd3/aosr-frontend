@@ -36,8 +36,14 @@ export interface CreatePassportUsageDTO {
 
 /**
  * Интефейс обновления записи использования объемов по паспорту
+  * @property {number} id
+  * @property {number} aosrMaterialId?
+  * @property {number} passportId?
   * @property {number} usedVolume?
   */
 export interface UpdatePassportUsageDTO {
+  id: number;
+  aosrMaterialId?: number;
+  passportId?: number;
   usedVolume?: number;
 }

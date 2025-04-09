@@ -9,6 +9,7 @@ type InputProps = {
   error: string;
   placeholder: string;
   halfWidth?: boolean;
+  info?: string;
 }
 
 type VolumeAndCapacityInputProps = {
@@ -17,6 +18,7 @@ type VolumeAndCapacityInputProps = {
   material: Material;
   onChange: (value: string) => void;
   error: string;
+  info?: string;
 }
 
 export function TextInput({ isDisabled, value, onChange, error, placeholder }: InputProps) {
@@ -34,7 +36,7 @@ export function TextInput({ isDisabled, value, onChange, error, placeholder }: I
   )
 }
 
-export function NumberInput({ isDisabled, value, onChange, onBlur, error, placeholder, halfWidth }: InputProps) {
+export function NumberInput({ isDisabled, value, onChange, onBlur, error, placeholder, halfWidth, info }: InputProps) {
   return (
     <>
       <input
@@ -55,7 +57,7 @@ export function NumberInput({ isDisabled, value, onChange, onBlur, error, placeh
   )
 }
 
-export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onChange, error }: VolumeAndCapacityInputProps) {
+export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onChange, info, error }: VolumeAndCapacityInputProps) {
 
   const capacityToWeight = (capacity: string) => {
     const result = parseFloat(capacity) * parseFloat(material.density);
@@ -121,6 +123,8 @@ export function VolumeAndCapacityInput({ isDisabled, volumeValue, material, onCh
         error={error}
         halfWidth={true}
       />
+      <p className="absolute mt-10 text-sm text-gray-500"></p>
+
       <NumberInput
         isDisabled={isDisabled}
         value={localWeight}
