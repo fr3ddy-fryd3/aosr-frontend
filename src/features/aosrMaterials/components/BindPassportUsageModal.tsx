@@ -1,3 +1,4 @@
+import { AosrMaterial } from "@/entities/aosr";
 import { Material } from "@/entities/material";
 import { Option } from "@/entities/option";
 import { Passport } from "@/entities/passport";
@@ -18,7 +19,7 @@ interface BindPassportModalProps {
   setCreatePassportUsageData: (data: CreatePassportUsageDTO) => void;
   onSave: (aosrId: number) => void;
   aosrId: number;
-  aosrMaterialId: number;
+  aosrMaterial: AosrMaterial;
 }
 
 export function BindPassportModal({
@@ -30,6 +31,7 @@ export function BindPassportModal({
   setCreatePassportUsageData,
   onSave,
   aosrId,
+  aosrMaterial,
 }: BindPassportModalProps) {
   const [passportInputValue, setPassportInputValue] = useState("");
   const [isPassportMenuOpen, setIsPassportMenuOpen] = useState(false);
@@ -46,7 +48,7 @@ export function BindPassportModal({
     }}>
       <div className="space-y-4">
         <Select<Option>
-          options={passportOptions}
+          options={passportOptions.filter((pu) => pu.value.materialId === aosrMaterial.sectionMaterial?.materialId)}
           value={passportOptions.find((po) => po.value.id === createPassportUsageData.passportId) || null}
           onChange={(option) => {
             setCreatePassportUsageData({ ...createPassportUsageData, passportId: option?.value.id || 0 });

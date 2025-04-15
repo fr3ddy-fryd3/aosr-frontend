@@ -7,14 +7,16 @@ import { DeleteAosrMaterialModal } from "@/features/aosrMaterials/components/Del
 import { EditPassportModal } from "@/features/aosrMaterials/components/EditPassportUsageModal";
 import { useAosrMaterialsActions } from "@/features/aosrMaterials/hooks/useAosrMaterialsActions";
 import { useAosrMaterialsData } from "@/features/aosrMaterials/hooks/useAosrMaterialsData";
+import { passportApi } from "@/shared/api/passport";
 import { passportUsageApi } from "@/shared/api/passportUsage";
 import { CreatePassportUsageDTO, UpdatePassportUsageDTO } from "@/shared/model/dto/passport";
-import { useState } from "react";
+import { Loading } from "@/shared/ui/Loading";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export function AosrMaterialsPage() {
   const { aosrId } = useParams();
-  const { aosr, materials, passports, aosrMaterials, setAosrMaterials } = useAosrMaterialsData(aosrId || "");
+  const { aosr, materials, passports, setPassports, aosrMaterials, setAosrMaterials } = useAosrMaterialsData(aosrId || "");
   const {
     editingAosrId,
     setEditingAosrId,
@@ -27,15 +29,34 @@ export function AosrMaterialsPage() {
     setIsDeleteModalOpen,
   } = useAosrMaterialsActions(aosrMaterials, setAosrMaterials);
 
+  const [loading, setLoading] = useState(true);
+
   const [isBindPassportModalOpen, setIsBindPassportModalOpen] = useState(false);
   const [isEditPassportModalOpen, setIsEditPassportModalOpen] = useState(false);
+
   const [createPassportUsageData, setCreatePassportUsageData] = useState<CreatePassportUsageDTO>({} as CreatePassportUsageDTO);
   const [updatePassportUsageData, setUpdatePassportUsageData] = useState<UpdatePassportUsageDTO>({} as UpdatePassportUsageDTO);
-  const [selectedAosrMaterialId, setSelectedAosrMaterialId] = useState(0);
 
-  const passportsMap = new Map<number, Passport>(
-    passports.map(passport => [passport.id, passport])
-  );
+  const [selectedAosrMaterial, setSelectedAosrMaterial] = useState<AosrMaterial>({} as AosrMaterial);
+  const [selectedPassport, setSelectedPassport] = useState<Passport>({} as Passport);
+  const [selectedPassportUsage, setSelectedPassportUsage] = useState<PassportUsage>({} as PassportUsage);
+
+  const [passportsMap, setPassportsMap] = useState<Map<number, Passport>>(new Map);
+
+  useEffect(() => {
+    const prepareData = () => {
+      try {
+        setPassportsMap(new Map<number, Passport>(
+          passports.map(passport => [passport.id, passport])
+        ));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    prepareData();
+  }, [passports])
 
   const aosrMaterialsMap = new Map<number, AosrMaterial>(
     aosrMaterials.map(material => [material.id, material])
@@ -62,23 +83,31 @@ export function AosrMaterialsPage() {
   };
 
   const onPassportUsageUpdate = async () => {
-    const updated = await passportUsageApi.update(updatePassportUsageData.id, updatePassportUsageData);
-    if (updated) {
+    const updatedPassportUsage = await passportUsageApi.update(updatePassportUsageData.id, updatePassportUsageData);
+    const upToDatePassport = await passportApi.getById(selectedPassport.id)
+    if (updatedPassportUsage) {
       setAosrMaterials([
         ...aosrMaterials.map((material) =>
-          material.id === updated.aosrMaterialId
+          material.id === updatedPassportUsage.aosrMaterialId
             ? {
               ...material,
               passportUsages: material.passportUsages.map((usage) =>
-                usage.id === updated.id ? updated : usage
+                usage.id === updatedPassportUsage.id ? updatedPassportUsage : usage
               ),
             }
             : material
         )
       ]
       );
+
       setIsEditPassportModalOpen(false);
       setUpdatePassportUsageData({} as UpdatePassportUsageDTO);
+    }
+    console.log(upToDatePassport);
+    if (upToDatePassport) {
+      setPassports(passports.map((p) => p.id === upToDatePassport.id ? upToDatePassport : p));
+      setSelectedPassport(upToDatePassport);
+      console.log(passportsMap);
     }
   };
 
@@ -101,21 +130,29 @@ export function AosrMaterialsPage() {
       setUpdatePassportUsageData({} as UpdatePassportUsageDTO);
     }
   };
-  const handlePassportUsageBind = (aosrMaterialId: number) => {
-    setSelectedAosrMaterialId(aosrMaterialId);
-    setCreatePassportUsageData({ ...createPassportUsageData, aosrMaterialId }); // Устанавливаем aosrMaterialId
+  const handlePassportUsageBind = (aosrMaterial: AosrMaterial) => {
+    setSelectedAosrMaterial(aosrMaterial);
+    setCreatePassportUsageData({ ...createPassportUsageData, aosrMaterialId: aosrMaterial.id }); // Устанавливаем aosrMaterialId
     setIsBindPassportModalOpen(true);
   };
 
-  const handlePassportUsageEdit = (aosrMaterialId: number, passportUsage: PassportUsage) => {
+  const handlePassportUsageEdit = (aosrMaterial: AosrMaterial, passportUsage: PassportUsage) => {
     setUpdatePassportUsageData({
       id: passportUsage.id,
-      aosrMaterialId: aosrMaterialId,
+      aosrMaterialId: aosrMaterial.id,
       passportId: passportUsage.passportId,
-      usedVolume: passportUsage.usedVolume, // Приводим к строке, если API требует
+      usedVolume: passportUsage.usedVolume,
     });
+    setSelectedAosrMaterial(aosrMaterial);
     setIsEditPassportModalOpen(true);
+    setSelectedPassportUsage(passportUsage);
   };
+
+  if (loading) {
+    return (
+      <Loading />
+    )
+  }
 
   return (
     <div className="p-4">
@@ -147,7 +184,7 @@ export function AosrMaterialsPage() {
         isOpen={isBindPassportModalOpen}
         onClose={() => {
           setIsBindPassportModalOpen(false);
-          setSelectedAosrMaterialId(0);
+          setSelectedAosrMaterial({} as AosrMaterial);
         }}
         passports={passports}
         materials={materials}
@@ -155,7 +192,7 @@ export function AosrMaterialsPage() {
         setCreatePassportUsageData={setCreatePassportUsageData}
         onSave={onPassportUsageCreate}
         aosrId={Number(aosrId)}
-        aosrMaterialId={selectedAosrMaterialId}
+        aosrMaterial={selectedAosrMaterial}
       />
       <EditPassportModal
         isOpen={isEditPassportModalOpen}
@@ -163,6 +200,9 @@ export function AosrMaterialsPage() {
         passports={passports}
         materials={materials}
         updatePassportUsageData={updatePassportUsageData}
+        selectedPassport={selectedPassport}
+        setSelectedPassport={setSelectedPassport}
+        selectedPassportUsage={selectedPassportUsage}
         setUpdatePassportUsageData={setUpdatePassportUsageData}
         onSave={onPassportUsageUpdate}
         onDelete={onPassportUsageDelete}

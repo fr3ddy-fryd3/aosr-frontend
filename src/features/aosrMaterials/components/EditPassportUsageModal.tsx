@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Option } from "@/entities/option";
 import { Material } from "@/entities/material";
-import { Passport } from "@/entities/passport";
+import { Passport, PassportUsage } from "@/entities/passport";
 import { SmallModal } from "@/shared/ui/Modal";
 import { Button } from "@/shared/ui/Button";
 import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
 import Select from "react-select/base";
 import { isUnitTranslatable } from "@/shared/utils/material";
 import { UpdatePassportUsageDTO } from "@/shared/model/dto/passport";
+import { Dispatch } from "react";
 
 interface EditPassportModalProps {
   isOpen: boolean;
@@ -15,6 +16,9 @@ interface EditPassportModalProps {
   passports: Passport[];
   materials: Material[];
   updatePassportUsageData: UpdatePassportUsageDTO;
+  selectedPassport: Passport;
+  setSelectedPassport: Dispatch<SetStateAction<Passport>>;
+  selectedPassportUsage: PassportUsage;
   setUpdatePassportUsageData: (data: UpdatePassportUsageDTO) => void;
   onSave: () => void;
   onDelete: () => void;
@@ -26,13 +30,15 @@ export function EditPassportModal({
   passports,
   materials,
   updatePassportUsageData,
+  selectedPassport,
+  setSelectedPassport,
+  selectedPassportUsage,
   setUpdatePassportUsageData,
   onSave,
   onDelete,
 }: EditPassportModalProps) {
   const [passportInputValue, setPassportInputValue] = useState("");
   const [isPassportMenuOpen, setIsPassportMenuOpen] = useState(false);
-  const [selectedPassport, setSelectedPassport] = useState<Passport>({} as Passport);
 
   const passportOptions: Option[] = passports.map((passport) => ({
     value: passport,
@@ -42,7 +48,7 @@ export function EditPassportModal({
   useEffect(() => {
     setSelectedPassport(
       passportOptions.find((po) => po.value.id === updatePassportUsageData.passportId)?.value || {} as Passport
-    )
+    );
   }, [updatePassportUsageData])
 
   return (
@@ -73,9 +79,13 @@ export function EditPassportModal({
           <VolumeAndCapacityInput
             volumeValue={updatePassportUsageData.usedVolume?.toString() || ""}
             material={selectedPassport.material}
-            onChange={(value) => setUpdatePassportUsageData({ ...updatePassportUsageData, usedVolume: Number(value) })}
+            onChange={(value) => {
+              setUpdatePassportUsageData({ ...updatePassportUsageData, usedVolume: Number(value) });
+            }}
             error=""
-            availableVolumeInfo={selectedPassport.availableVolume}
+            availableVolumeInfo={String(
+              Number(selectedPassport.availableVolume) + Number(selectedPassportUsage.usedVolume)
+            )}
           />
         ) : (
           <NumberInput
@@ -88,7 +98,10 @@ export function EditPassportModal({
         )}
         <div className="flex gap-4">
           <Button onClick={onDelete} variant="danger">Удалить</Button>
-          <Button onClick={onSave} variant="modal">Сохранить</Button>
+          <Button onClick={() => {
+            onSave();
+          }}
+            variant="modal">Сохранить</Button>
         </div>
       </div>
     </SmallModal>

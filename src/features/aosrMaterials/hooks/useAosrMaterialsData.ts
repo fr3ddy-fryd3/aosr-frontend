@@ -25,7 +25,7 @@ export function useAosrMaterialsData(aosrId: string) {
     let localMaterialTemplates: AosrMaterial[] = [];
     let localAosrMaterials: AosrMaterial[] = [];
 
-    if (sectionData) {
+    if (sectionData && aosrData) {
       localMaterialTemplates = getMaterialsTemplates(sectionData.materials);
       setSectionMaterials(sectionData.materials);
     }
@@ -38,16 +38,25 @@ export function useAosrMaterialsData(aosrId: string) {
     if (passportsData) setPassports(passportsData);
   };
 
-  const getMaterialsTemplates = (localSectionMaterials: SectionMaterial[]) =>
-    localSectionMaterials.map((sm) => ({
-      id: getFreeId(aosrMaterials),
-      aosrId: Number(aosrId),
-      sectionMaterialId: sm.id,
-      volume: "0",
-      usedVolume: "0",
-      sectionMaterial: sm,
-      passportUsages: [],
-    }));
+  const getMaterialsTemplates = (localSectionMaterials: SectionMaterial[]): AosrMaterial[] => {
+    let templates: AosrMaterial[] = [];
+
+    for (const sm of localSectionMaterials) {
+      templates.push(
+        {
+          id: getFreeId(templates),
+          aosrId: Number(aosrId),
+          sectionMaterialId: sm.id,
+          volume: "0",
+          usedVolume: "0",
+          sectionMaterial: sm,
+          passportUsages: [],
+        }
+      )
+    }
+
+    return templates;
+  };
 
   const getProcessedAosrMaterials = (templates: AosrMaterial[], materials: AosrMaterial[]) => {
     const processed: AosrMaterial[] = [];
@@ -67,6 +76,7 @@ export function useAosrMaterialsData(aosrId: string) {
     aosr,
     materials,
     passports,
+    setPassports,
     aosrMaterials,
     sectionMaterials,
     setAosrMaterials,

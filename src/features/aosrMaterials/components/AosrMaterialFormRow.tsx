@@ -22,8 +22,8 @@ type AosrMaterialFormProps = {
   onCancel: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  onPassportUsageBind: (aosrMaterialId: number) => void;
-  onPassportUsageEdit: (aosrMaterialId: number, passportUsage: PassportUsage) => void;
+  onPassportUsageBind: (aosrMaterial: AosrMaterial) => void;
+  onPassportUsageEdit: (aosrMaterialId: AosrMaterial, passportUsage: PassportUsage) => void;
 }
 
 export function AosrMaterialFormRow(
@@ -129,13 +129,13 @@ export function AosrMaterialFormRow(
             key={pu.id}
             name={`№${passportsMap.get(pu.passportId)?.number.toString()}`}
             value={`${pu.usedVolume.toString()} ${aosrMaterialsMap.get(pu.aosrMaterialId)?.sectionMaterial.material.units}`}
-            onClick={() => onPassportUsageEdit(aosrMaterial.id, pu)}
+            onClick={() => onPassportUsageEdit(aosrMaterial, pu)}
           />
         ))}
         {/* Кнопка привязки паспорта */}
         <button
           className="bg-blue-300 hover:bg-blue-400 text-blue-800 cursor-pointer rounded-full aspect-square h-7"
-          onClick={() => onPassportUsageBind(aosrMaterial.id)}
+          onClick={() => onPassportUsageBind(aosrMaterial)}
         >
           +
         </button>

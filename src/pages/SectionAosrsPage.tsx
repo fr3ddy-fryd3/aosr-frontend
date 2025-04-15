@@ -1,6 +1,8 @@
 import { Aosr } from "@/entities/aosr";
+import { Material } from "@/entities/material";
 import { Section } from "@/entities/section";
 import { AosrTable } from "@/features/sectionAosrs/components/aosrTable";
+import { Dashboard } from "@/features/sectionAosrs/components/sectionMaterialsDashboard";
 import { aosrApi } from "@/shared/api/aosr";
 import { sectionApi } from "@/shared/api/section";
 import { CreateAosrDTO, UpdateAosrDTO } from "@/shared/model/dto/aosr";
@@ -84,12 +86,50 @@ export function SectionAosrsPage() {
     }
   };
 
+  interface AosrMaterialVolumeSum {
+    sectionMaterialId: number;
+    material: Material;
+    volume: number;
+    usedVolume: number;
+  }
+
+  // Функция для подсчёта сумм по материалам
+  function calculateMaterialVolumeSums(aosrArray: Aosr[]): AosrMaterialVolumeSum[] {
+    // Используем reduce для группировки по sectionMaterialId
+    const materialSums = aosrArray.reduce((acc, aosr) => {
+      aosr.materials?.forEach(am => {
+        const sectionMaterialId = am.sectionMaterialId;
+        const material = am.sectionMaterial.material;
+        const volume = parseFloat(am.sectionMaterial.volume);
+        const usedVolume = parseFloat(am.volume)
+
+        // Если запись для этого материала уже есть, обновляем её
+        if (acc[sectionMaterialId]) {
+          acc[sectionMaterialId].usedVolume += usedVolume;
+        } else {
+          // Если нет, создаём новую запись
+          acc[sectionMaterialId] = {
+            sectionMaterialId,
+            material,
+            volume: volume,
+            usedVolume: usedVolume,
+          };
+        }
+      });
+      return acc;
+    }, {} as Record<number, AosrMaterialVolumeSum>);
+
+    // Преобразуем объект в массив
+    return Object.values(materialSums);
+  }
 
   return (
     <div className="p-4">
 
       {/* Заголовок страницы */}
       <h1 className="text-gray-800 text-center font-sans text-2xl mb-8">Раздел "{section.name}"</h1>
+
+      <Dashboard data={calculateMaterialVolumeSums(aosrs)} />
 
       <div className="flex justify-between mb-4">
         {/* Заголовок */}
