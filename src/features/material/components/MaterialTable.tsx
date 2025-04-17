@@ -16,7 +16,6 @@ export function MaterialTable({ materials, editMode: editMode, deleteMode: delet
         <tr>
           <TableHeaderCell>Название</TableHeaderCell>
           <TableHeaderCell>Ед. измерения</TableHeaderCell>
-          <TableHeaderCell>Удельный вес</TableHeaderCell>
           <TableHeaderCell> </TableHeaderCell>
         </tr>
       </thead>

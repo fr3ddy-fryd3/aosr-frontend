@@ -1,6 +1,7 @@
 import { Material } from "@/entities/material"
 import { Option } from "@/entities/option"
 import { Passport } from "@/entities/passport"
+import { Aosr, AosrUsedVolumeForPassport } from "@/entities/aosr"
 import { PassportTable } from "@/features/passport/components/PassportTable"
 import { materialApi } from "@/shared/api/material"
 import { passportApi } from "@/shared/api/passport"
@@ -11,6 +12,8 @@ import { SmallModal } from "@/shared/ui/Modal"
 import { useEffect, useState } from "react"
 import { isUnitTranslatable } from "@/shared/utils/material"
 import Select from "react-select/base"
+import { aosrApi } from "@/shared/api/aosr"
+import { AosrTag } from "@/features/passport/components/aosrTag"
 
 export function PassportsPage() {
   const [passports, setPassports] = useState<Passport[]>([])
@@ -25,13 +28,17 @@ export function PassportsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isAosrsListModalOpen, setIsAosrsListModalOpen] = useState(false);
 
   // Состояния для паспортов
   const [createData, setCreateData] = useState<CreatePassportDTO>({} as CreatePassportDTO);
   const [updateData, setUpdateData] = useState<UpdatePassportDTO>({} as UpdatePassportDTO);
   const [passportToUpdate, setPassportToUpdate] = useState<Passport>({} as Passport);
   const [passportToDelete, setPassportToDelete] = useState<Passport>({} as Passport)
+  const [selectedPassport, setSelectedPassport] = useState<Passport>({} as Passport);
 
+  // Акты для отображения
+  const [aosrsToShow, setAosrsToShow] = useState<AosrUsedVolumeForPassport[]>([]);
 
   // Загрузка материалов и паспортов
   useEffect(() => {
@@ -50,9 +57,9 @@ export function PassportsPage() {
     label: material.name,
   }));
 
-
   // Запрос на создание паспорта и проверка его создания
   const onCreate = async () => {
+    createData.density = createData.density ? createData.density : '0';
     const created = await passportApi.create(createData);
     if (created !== undefined) {
       setPassports([...passports, created]);
@@ -101,6 +108,15 @@ export function PassportsPage() {
     }
   }
 
+  // Состояние просмотра связанных актов
+  const aosrsListMode = async (passport: Passport) => {
+    setIsAosrsListModalOpen(true);
+    const aosrs = await aosrApi.getByPassport(passport.id);
+    if (aosrs && aosrs?.length > 0) {
+      setAosrsToShow(aosrs);
+      setSelectedPassport(passport);
+    }
+  }
 
   return (
 
@@ -120,7 +136,7 @@ export function PassportsPage() {
       </div>
 
       {/* Таблица паспортов */}
-      <PassportTable passports={passports} editMode={editMode} deleteMode={deleteMode} />
+      <PassportTable passports={passports} aosrsListMode={aosrsListMode} editMode={editMode} deleteMode={deleteMode} />
 
       {/* Модальное окно создания паспорта */}
       <SmallModal isOpen={isCreateModalOpen} onClose={() => {
@@ -159,20 +175,28 @@ export function PassportsPage() {
             isMulti={false}
             placeholder="Материал паспорта" />
 
+
           {
             (isUnitTranslatable(materials, createData.materialId)) ? (
-              <VolumeAndCapacityInput
-                volumeValue={createData.volume}
-                material={selectedMaterial || {} as Material}
-                onChange={(value: string) => setCreateData({ ...createData, volume: value })}
-                error=""
-              />
-
+              <>
+                <NumberInput
+                  value={createData.density}
+                  onChange={(value) => setCreateData({ ...createData, density: value })}
+                  placeholder="Удельный вес"
+                  error="" />
+                <VolumeAndCapacityInput
+                  volumeValue={createData.volume}
+                  material={selectedMaterial || {} as Material}
+                  density={createData.density || '0'}
+                  onChange={(value: string) => setCreateData({ ...createData, volume: value })}
+                  error=""
+                />
+              </>
             ) : (
               <NumberInput
                 value={createData.volume}
                 onChange={(value: string) => setCreateData({ ...createData, volume: value })}
-                placeholder={`Объем, ${selectedMaterial.units}`}
+                placeholder={`Объем${selectedMaterial.units ? ', ' + selectedMaterial.units : ''}`}
                 error=""
               />
             )
@@ -221,12 +245,19 @@ export function PassportsPage() {
             isMulti={false}
             placeholder={passportToUpdate.material?.name || ''} />
 
+          <NumberInput
+            value={updateData.density || ''}
+            onChange={(value) => setUpdateData({ ...updateData, density: value })}
+            placeholder={passportToUpdate.density}
+            error="" />
+
           {
             (isUnitTranslatable(materials, updateData.materialId || passportToUpdate.materialId)) ? (
               <VolumeAndCapacityInput
                 volumeValue={updateData.volume || ''}
                 material={selectedMaterial}
                 onChange={(value: string) => setUpdateData({ ...updateData, volume: value })}
+                density={passportToUpdate.density || '0'}
                 error=""
                 currentVolume={passportToUpdate.volume}
               />
@@ -249,7 +280,29 @@ export function PassportsPage() {
         </div>
       </SmallModal>
 
-      {/* Модальное окно подтверждения удаления материала */}
+      {/* Модальное окно просмотра связанных актов */}
+      <SmallModal
+        isOpen={isAosrsListModalOpen}
+        onClose={() => {
+          setIsAosrsListModalOpen(false);
+          setAosrsToShow([]);
+          setSelectedPassport({} as Passport);
+        }}>
+
+        <h2 className="text-xl text-gray-700">Связанные акты</h2>
+        <div className="flex flex-wrap gap-2 my-4">
+          {aosrsToShow.length > 0 ?
+            aosrsToShow.map((aosr: AosrUsedVolumeForPassport) => (
+              <AosrTag aosr={aosr} unit={selectedPassport.material.units} />
+            ))
+            : (
+              <p className="text-gray-500">Отсутствуют связанные акты</p>
+            )}
+        </div>
+
+      </SmallModal>
+
+      {/* Модальное окно подтверждения удаления паспорта */}
       <SmallModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
         <h2 className="text-xl text-gray-700">Вы уверены, что хотите удалить паспорт №{passportToDelete.number}?</h2>
         <p className="text-gray-400 mb-8">Действие будет невозможно отменить</p>

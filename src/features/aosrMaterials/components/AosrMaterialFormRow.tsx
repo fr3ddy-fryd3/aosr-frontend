@@ -85,27 +85,14 @@ export function AosrMaterialFormRow(
         </div>
         <div className="w-full">
 
-          {/* Поле ввода объемов (веса) */}
-          {
-            (isUnitTranslatable(materials, aosrMaterial.sectionMaterial.materialId)) ? (
-              <VolumeAndCapacityInput
-                isDisabled={!isEdit}
-                volumeValue={aosrMaterial.volume}
-                material={selectedMaterial || {} as Material}
-                onChange={(value: string) => setAosrMaterial({ ...aosrMaterial, volume: value })}
-                error=""
-              />
-
-            ) : (
-              <NumberInput
-                isDisabled={!isEdit}
-                value={aosrMaterial.volume}
-                onChange={(value: string) => setAosrMaterial({ ...aosrMaterial, volume: value })}
-                placeholder={`Объем, ${selectedMaterial.units || ''}`}
-                error=""
-              />
-            )
-          }
+          {/* Поле ввода объемов */}
+          <NumberInput
+            isDisabled={!isEdit}
+            value={aosrMaterial.volume}
+            onChange={(value: string) => setAosrMaterial({ ...aosrMaterial, volume: value })}
+            placeholder={`Объем${', ' + selectedMaterial.units || ''}`}
+            error=""
+          />
         </div>
 
         {/* Кнопки редактирования/сохранения/отмены редактирования/удаления */}

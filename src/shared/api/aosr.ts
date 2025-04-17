@@ -1,6 +1,6 @@
 import api from ".";
 import { AxiosResponse } from "axios";
-import { Aosr } from "@/entities/aosr";
+import { Aosr, AosrUsedVolumeForPassport } from "@/entities/aosr";
 import { CreateAosrDTO, UpdateAosrDTO } from "../model/dto/aosr";
 
 export const aosrApi = {
@@ -26,6 +26,14 @@ export const aosrApi = {
       return response.data;
     } catch (err) {
       console.error(err);
+    }
+  },
+  getByPassport: async (passportId: number) => {
+    try {
+      let response: AxiosResponse<AosrUsedVolumeForPassport[]> = await api.get(`/aosr/by-passport/${passportId}`)
+      return response.data;
+    } catch (err) {
+      console.error(err)
     }
   },
   create: async (data: CreateAosrDTO) => {

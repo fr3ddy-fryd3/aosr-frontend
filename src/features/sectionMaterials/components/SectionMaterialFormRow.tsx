@@ -86,27 +86,14 @@ export function SectionMaterialFormRow(
       </div>
       <div className="w-full">
 
-        {/* Поле ввода объемов (веса) */}
-        {
-          (isUnitTranslatable(materials, childrenMaterial.materialId)) ? (
-            <VolumeAndCapacityInput
-              isDisabled={!isEdit}
-              volumeValue={childrenMaterial.volume}
-              material={selectedMaterial || {} as Material}
-              onChange={(value: string) => setSectionMaterial({ ...childrenMaterial, volume: value })}
-              error=""
-            />
-
-          ) : (
-            <NumberInput
-              isDisabled={!isEdit}
-              value={childrenMaterial.volume}
-              onChange={(value: string) => setSectionMaterial({ ...childrenMaterial, volume: value })}
-              placeholder={`Объем, ${selectedMaterial.units || ''}`}
-              error=""
-            />
-          )
-        }
+        {/* Поле ввода объемов */}
+        <NumberInput
+          isDisabled={!isEdit}
+          value={childrenMaterial.volume}
+          onChange={(value: string) => setSectionMaterial({ ...childrenMaterial, volume: value })}
+          placeholder={`Объем, ${selectedMaterial.units || ''}`}
+          error=""
+        />
       </div>
 
       {/* Кнопки редактирования/сохранения/отмены редактирования/удаления */}

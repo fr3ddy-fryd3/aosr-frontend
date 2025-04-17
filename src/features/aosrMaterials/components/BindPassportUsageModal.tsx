@@ -66,17 +66,24 @@ export function BindPassportModal({
           <VolumeAndCapacityInput
             volumeValue={createPassportUsageData.usedVolume}
             material={selectedPassport.material}
+            density={selectedPassport.density}
             onChange={(value) => setCreatePassportUsageData({ ...createPassportUsageData, usedVolume: value })}
-            error=""
-            availableVolumeInfo={selectedPassport.availableVolume}
+            error={createPassportUsageData.usedVolume > selectedPassport.availableVolume ?
+              "Доступного объема недостаточно" :
+              ""
+            }
+            availableVolumeInfo={selectedPassport.availableVolume || '0'}
           />
         ) : (
           <NumberInput
             value={createPassportUsageData.usedVolume}
             onChange={(value) => setCreatePassportUsageData({ ...createPassportUsageData, usedVolume: value })}
-            error=""
-            placeholder={`Объем, ${selectedPassport.material?.units || ""}`}
-            info={selectedPassport.availableVolume}
+            error={createPassportUsageData.usedVolume > selectedPassport.availableVolume ?
+              "Доступного объема недостаточно" :
+              ""
+            }
+            placeholder={`Объем${selectedPassport.material?.units ? ', ' + selectedPassport.material.units : ''}`}
+            info={selectedPassport.material ? `${selectedPassport.availableVolume} ${selectedPassport.material?.units}` : ''}
           />
         )}
         <Button
