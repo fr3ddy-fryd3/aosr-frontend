@@ -34,3 +34,9 @@ export interface AosrMaterial {
   sectionMaterial: SectionMaterial;
   passportUsages: PassportUsage[];
 }
+
+export interface AosrUsedVolumeForPassport {
+  id: number;
+  name: string;
+  totalUsedVolume: number;
+}

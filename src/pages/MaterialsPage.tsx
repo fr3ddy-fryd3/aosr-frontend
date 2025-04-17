@@ -28,7 +28,7 @@ export function MaterialsPage() {
   const [materialToDelete, setMaterialToDelete] = useState<Material>({} as Material)
 
   // Данные для выпадающего списка
-  const unitOptions: Option[] = ["м³/т", "см³/г", "м²", "л"].map((unit) => ({
+  const unitOptions: Option[] = ["м³/т", "см³/г", "м³", "т", "м²", "л"].map((unit) => ({
     label: unit,
     value: unit,
   }));
@@ -136,12 +136,6 @@ export function MaterialsPage() {
             isMulti={false}
             placeholder="Ед. измерения" />
 
-          <NumberInput
-            value={createData.density}
-            onChange={(value: string) => setCreateData({ ...createData, density: value })}
-            placeholder="Удельный вес"
-            error=""
-          />
           <Button onClick={onCreate} variant="modal">
             Сохранить
           </Button>
@@ -179,12 +173,6 @@ export function MaterialsPage() {
             isMulti={false}
             placeholder={materialToUpdate.units} />
 
-          <NumberInput
-            value={updateData.density || ''}
-            onChange={(value: string) => setUpdateData({ ...updateData, density: value })}
-            placeholder={materialToUpdate.density}
-            error=""
-          />
           <Button onClick={onEdit} variant="modal">
             Сохранить
           </Button>

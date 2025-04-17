@@ -79,6 +79,7 @@ export function EditPassportModal({
           <VolumeAndCapacityInput
             volumeValue={updatePassportUsageData.usedVolume?.toString() || ""}
             material={selectedPassport.material}
+            density={selectedPassport.density}
             onChange={(value) => {
               setUpdatePassportUsageData({ ...updatePassportUsageData, usedVolume: Number(value) });
             }}

@@ -129,7 +129,15 @@ export function SectionAosrsPage() {
       {/* Заголовок страницы */}
       <h1 className="text-gray-800 text-center font-sans text-2xl mb-8">Раздел "{section.name}"</h1>
 
-      <Dashboard data={calculateMaterialVolumeSums(aosrs)} />
+      {
+        aosrs.length > 0 ?
+          <Dashboard data={calculateMaterialVolumeSums(aosrs)} /> :
+          <div className="h-32 mb-8 flex items-center justify-center bg-gray-100">
+            <p className="text-xl text-center text-gray-700">
+              Отсутствуют акты для отображения использованых объемов
+            </p>
+          </div>
+      }
 
       <div className="flex justify-between mb-4">
         {/* Заголовок */}
