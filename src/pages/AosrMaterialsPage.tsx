@@ -204,6 +204,7 @@ export function AosrMaterialsPage() {
         setSelectedPassport={setSelectedPassport}
         selectedPassportUsage={selectedPassportUsage}
         setUpdatePassportUsageData={setUpdatePassportUsageData}
+        aosrMaterial={selectedAosrMaterial}
         onSave={onPassportUsageUpdate}
         onDelete={onPassportUsageDelete}
       />

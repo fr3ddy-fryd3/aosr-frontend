@@ -170,7 +170,6 @@ export function SectionAosrsPage() {
             value={createData.name}
             onChange={(value) => setCreateData({ ...createData, name: value })}
             placeholder="Номер акта"
-            error=""
           />
           <Button onClick={onCreate} variant="modal">
             Сохранить
@@ -187,7 +186,6 @@ export function SectionAosrsPage() {
             value={updateData.name || ''}
             onChange={(value) => setUpdateData({ ...updateData, name: value })}
             placeholder={aosrToUpdate.name}
-            error=""
           />
           <Button onClick={onEdit} variant="modal">
             Сохранить

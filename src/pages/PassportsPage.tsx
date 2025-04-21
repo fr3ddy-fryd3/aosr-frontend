@@ -1,7 +1,7 @@
 import { Material } from "@/entities/material"
 import { Option } from "@/entities/option"
 import { Passport } from "@/entities/passport"
-import { Aosr, AosrUsedVolumeForPassport } from "@/entities/aosr"
+import { AosrUsedVolumeForPassport } from "@/entities/aosr"
 import { PassportTable } from "@/features/passport/components/PassportTable"
 import { materialApi } from "@/shared/api/material"
 import { passportApi } from "@/shared/api/passport"
@@ -39,6 +39,9 @@ export function PassportsPage() {
 
   // Акты для отображения
   const [aosrsToShow, setAosrsToShow] = useState<AosrUsedVolumeForPassport[]>([]);
+
+  // Состояние для ошибок
+  const [error, setError] = useState('');
 
   // Загрузка материалов и паспортов
   useEffect(() => {
@@ -150,7 +153,6 @@ export function PassportsPage() {
             value={createData.number}
             onChange={(value) => setCreateData({ ...createData, number: value })}
             placeholder="Номер паспорта"
-            error=""
           />
 
           <Select<Option>
@@ -183,13 +185,15 @@ export function PassportsPage() {
                   value={createData.density}
                   onChange={(value) => setCreateData({ ...createData, density: value })}
                   placeholder="Удельный вес"
-                  error="" />
+                />
+
                 <VolumeAndCapacityInput
                   volumeValue={createData.volume}
                   material={selectedMaterial || {} as Material}
                   density={createData.density || '0'}
                   onChange={(value: string) => setCreateData({ ...createData, volume: value })}
-                  error=""
+                  error={error}
+                  setError={setError}
                 />
               </>
             ) : (
@@ -197,7 +201,6 @@ export function PassportsPage() {
                 value={createData.volume}
                 onChange={(value: string) => setCreateData({ ...createData, volume: value })}
                 placeholder={`Объем${selectedMaterial.units ? ', ' + selectedMaterial.units : ''}`}
-                error=""
               />
             )
           }
@@ -220,7 +223,6 @@ export function PassportsPage() {
             value={updateData.number || ''}
             onChange={(value) => setUpdateData({ ...updateData, number: value })}
             placeholder={passportToUpdate.number}
-            error=""
           />
 
           <Select<Option>
@@ -249,7 +251,7 @@ export function PassportsPage() {
             value={updateData.density || ''}
             onChange={(value) => setUpdateData({ ...updateData, density: value })}
             placeholder={passportToUpdate.density}
-            error="" />
+          />
 
           {
             (isUnitTranslatable(materials, updateData.materialId || passportToUpdate.materialId)) ? (
@@ -258,22 +260,18 @@ export function PassportsPage() {
                 material={selectedMaterial}
                 onChange={(value: string) => setUpdateData({ ...updateData, volume: value })}
                 density={passportToUpdate.density || '0'}
-                error=""
+                error={error}
+                setError={setError}
                 currentVolume={passportToUpdate.volume}
               />
-
             ) : (
               <NumberInput
                 value={updateData.volume || ''}
                 onChange={(value: string) => setUpdateData({ ...updateData, volume: value })}
                 placeholder={passportToUpdate.volume}
-                error=""
               />
             )
           }
-
-
-
           <Button onClick={() => onEdit(passportToUpdate.id)} variant="modal">
             Сохранить
           </Button>

@@ -116,7 +116,6 @@ export function ProjectSectionsPage() {
             value={createData.name}
             onChange={(value) => setCreateData({ ...createData, name: value })}
             placeholder="Название"
-            error=""
           />
           <Button onClick={onCreate} variant="modal">
             Сохранить
@@ -133,7 +132,6 @@ export function ProjectSectionsPage() {
             value={updateData.name || ''}
             onChange={(value) => setUpdateData({ ...updateData, name: value })}
             placeholder={sectionToUpdate.name}
-            error=""
           />
           <Button onClick={onEdit} variant="modal">
             Сохранить

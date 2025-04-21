@@ -4,7 +4,7 @@ import { Option } from "@/entities/option";
 import { Passport } from "@/entities/passport";
 import { CreatePassportUsageDTO } from "@/shared/model/dto/passport";
 import { Button } from "@/shared/ui/Button";
-import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
+import { VolumeAndCapacityInput, VolumeInput } from "@/shared/ui/Input";
 import { SmallModal } from "@/shared/ui/Modal";
 import { isUnitTranslatable } from "@/shared/utils/material";
 import { useState } from "react";
@@ -36,6 +36,7 @@ export function BindPassportModal({
   const [passportInputValue, setPassportInputValue] = useState("");
   const [isPassportMenuOpen, setIsPassportMenuOpen] = useState(false);
   const [selectedPassport, setSelectedPassport] = useState<Passport>({} as Passport);
+  const [error, setError] = useState('');
 
   const passportOptions: Option[] = passports.map((passport) => ({
     value: passport,
@@ -45,6 +46,8 @@ export function BindPassportModal({
   return (
     <SmallModal isOpen={isOpen} onClose={() => {
       onClose();
+      setCreatePassportUsageData({} as CreatePassportUsageDTO);
+      setSelectedPassport({} as Passport);
     }}>
       <div className="space-y-4">
         <Select<Option>
@@ -68,25 +71,22 @@ export function BindPassportModal({
             material={selectedPassport.material}
             density={selectedPassport.density}
             onChange={(value) => setCreatePassportUsageData({ ...createPassportUsageData, usedVolume: value })}
-            error={createPassportUsageData.usedVolume > selectedPassport.availableVolume ?
-              "Доступного объема недостаточно" :
-              ""
-            }
-            availableVolumeInfo={selectedPassport.availableVolume || '0'}
+            error={error}
+            setError={setError}
+            availableVolume={selectedPassport.availableVolume || '0'}
           />
         ) : (
-          <NumberInput
-            value={createPassportUsageData.usedVolume}
+          <VolumeInput
+            volumeValue={createPassportUsageData.usedVolume}
             onChange={(value) => setCreatePassportUsageData({ ...createPassportUsageData, usedVolume: value })}
-            error={createPassportUsageData.usedVolume > selectedPassport.availableVolume ?
-              "Доступного объема недостаточно" :
-              ""
-            }
-            placeholder={`Объем${selectedPassport.material?.units ? ', ' + selectedPassport.material.units : ''}`}
-            info={selectedPassport.material ? `${selectedPassport.availableVolume} ${selectedPassport.material?.units}` : ''}
+            availableVolume={selectedPassport.availableVolume}
+            material={selectedPassport.material}
+            error={error}
+            setError={setError}
           />
         )}
         <Button
+          isDisabled={error === "" ? false : true}
           onClick={() => {
             onSave(aosrId);
             setSelectedPassport({} as Passport);

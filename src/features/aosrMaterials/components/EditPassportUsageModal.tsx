@@ -4,11 +4,12 @@ import { Material } from "@/entities/material";
 import { Passport, PassportUsage } from "@/entities/passport";
 import { SmallModal } from "@/shared/ui/Modal";
 import { Button } from "@/shared/ui/Button";
-import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
+import { VolumeAndCapacityInput, VolumeInput } from "@/shared/ui/Input";
 import Select from "react-select/base";
 import { isUnitTranslatable } from "@/shared/utils/material";
 import { UpdatePassportUsageDTO } from "@/shared/model/dto/passport";
 import { Dispatch } from "react";
+import { AosrMaterial } from "@/entities/aosr";
 
 interface EditPassportModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ interface EditPassportModalProps {
   setSelectedPassport: Dispatch<SetStateAction<Passport>>;
   selectedPassportUsage: PassportUsage;
   setUpdatePassportUsageData: (data: UpdatePassportUsageDTO) => void;
+  aosrMaterial: AosrMaterial;
   onSave: () => void;
   onDelete: () => void;
 }
@@ -34,15 +36,17 @@ export function EditPassportModal({
   setSelectedPassport,
   selectedPassportUsage,
   setUpdatePassportUsageData,
+  aosrMaterial,
   onSave,
   onDelete,
 }: EditPassportModalProps) {
   const [passportInputValue, setPassportInputValue] = useState("");
   const [isPassportMenuOpen, setIsPassportMenuOpen] = useState(false);
+  const [error, setError] = useState('');
 
   const passportOptions: Option[] = passports.map((passport) => ({
     value: passport,
-    label: `№${passport.number}`,
+    label: `№${passport.number} - ${passport.material.name}`,
   }));
 
   useEffect(() => {
@@ -61,7 +65,7 @@ export function EditPassportModal({
     >
       <div className="space-y-4">
         <Select<Option>
-          options={passportOptions}
+          options={passportOptions.filter((pu) => pu.value.materialId === aosrMaterial.sectionMaterial?.materialId)}
           value={passportOptions.find((po) => po.value.id === updatePassportUsageData.passportId) || null}
           onChange={(option) => {
             setUpdatePassportUsageData({ ...updatePassportUsageData, passportId: option?.value.id || 0 });
@@ -83,25 +87,30 @@ export function EditPassportModal({
             onChange={(value) => {
               setUpdatePassportUsageData({ ...updatePassportUsageData, usedVolume: Number(value) });
             }}
-            error=""
-            availableVolumeInfo={String(
+            error={error}
+            setError={setError}
+            availableVolume={String(
               Number(selectedPassport.availableVolume) + Number(selectedPassportUsage.usedVolume)
             )}
           />
         ) : (
-          <NumberInput
-            value={updatePassportUsageData.usedVolume?.toString() || ""}
+          <VolumeInput
+            volumeValue={updatePassportUsageData.usedVolume?.toString() || ""}
             onChange={(value) => setUpdatePassportUsageData({ ...updatePassportUsageData, usedVolume: Number(value) })}
-            error=""
-            placeholder={`Объем, ${selectedPassport.material?.units || ""}`}
-            info={selectedPassport.availableVolume}
+            availableVolume={selectedPassport.availableVolume}
+            error={error}
+            setError={setError}
+            material={selectedPassport.material}
           />
         )}
         <div className="flex gap-4">
           <Button onClick={onDelete} variant="danger">Удалить</Button>
-          <Button onClick={() => {
-            onSave();
-          }}
+          <Button
+            isDisabled={error === "" ? false : true}
+            onClick={() => {
+              onSave();
+              setSelectedPassport({} as Passport);
+            }}
             variant="modal">Сохранить</Button>
         </div>
       </div>

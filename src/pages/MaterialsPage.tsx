@@ -4,7 +4,7 @@ import { MaterialTable } from "@/features/material/components/MaterialTable"
 import { materialApi } from "@/shared/api/material"
 import { CreateMaterialDTO, UpdateMaterialDTO } from "@/shared/model/dto/material"
 import { Button } from "@/shared/ui/Button"
-import { NumberInput, TextInput } from "@/shared/ui/Input"
+import { TextInput } from "@/shared/ui/Input"
 import { SmallModal } from "@/shared/ui/Modal"
 import { useEffect, useState } from "react"
 import Select from "react-select/base"
@@ -114,7 +114,6 @@ export function MaterialsPage() {
             value={createData.name}
             onChange={(value) => setCreateData({ ...createData, name: value })}
             placeholder="Название"
-            error=""
           />
 
           <Select<Option>
@@ -151,7 +150,6 @@ export function MaterialsPage() {
             value={updateData.name || ''}
             onChange={(value) => setUpdateData({ ...updateData, name: value })}
             placeholder={materialToUpdate.name}
-            error=""
           />
 
           <Select<Option>

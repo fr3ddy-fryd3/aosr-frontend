@@ -3,9 +3,8 @@ import { SectionMaterial } from "@/entities/section";
 import { Option } from "@/entities/option";
 import { useEffect, useState } from "react";
 import Select from "react-select/base";
-import { isUnitTranslatable } from "@/shared/utils/material";
 import { ActionButtons } from "@/shared/ui/ActionButtons";
-import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
+import { NumberInput } from "@/shared/ui/Input";
 
 
 type SectionMaterialFormProps = {
@@ -92,7 +91,6 @@ export function SectionMaterialFormRow(
           value={childrenMaterial.volume}
           onChange={(value: string) => setSectionMaterial({ ...childrenMaterial, volume: value })}
           placeholder={`Объем, ${selectedMaterial.units || ''}`}
-          error=""
         />
       </div>
 

@@ -1,5 +1,5 @@
 import { Material } from "@/entities/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { ModalError } from "./ModalError";
 
 type BaseInputProps = {
@@ -7,11 +7,21 @@ type BaseInputProps = {
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
-  error?: string;
   placeholder: string;
   halfWidth?: boolean;
-  info?: string;
+  isError?: boolean;
 };
+
+type VolumeInputProps = {
+  isDisabled?: boolean;
+  volumeValue: string;
+  material: Material;
+  error: string;
+  setError: Dispatch<SetStateAction<string>>;
+  onChange: (value: string) => void;
+  onBlur?: () => void;
+  availableVolume?: string;
+}
 
 type VolumeAndCapacityInputProps = {
   isDisabled?: boolean;
@@ -19,15 +29,16 @@ type VolumeAndCapacityInputProps = {
   material: Material;
   density: string;
   onChange: (value: string) => void;
-  availableVolumeInfo?: string;
+  availableVolume?: string;
   currentVolume?: string;
-  error?: string;
+  error: string;
+  setError: Dispatch<SetStateAction<string>>;
 };
 
 const getInputClasses = (
   isDisabled?: boolean,
-  error?: string,
-  halfWidth?: boolean
+  halfWidth?: boolean,
+  isError?: boolean,
 ) => {
   return [
     "p-2",
@@ -36,7 +47,7 @@ const getInputClasses = (
     "border",
     "rounded-md",
     halfWidth ? "w-1/2" : "w-full",
-    error ? "border-red-400" : "border-gray-300",
+    isError ? "border-red-400" : "border-gray-300",
     isDisabled ? "bg-gray-100 text-gray-400" : ""
   ].join(" ");
 };
@@ -45,19 +56,17 @@ export function TextInput({
   isDisabled,
   value,
   onChange,
-  error,
   placeholder
 }: BaseInputProps) {
   return (
     <>
       <input
         disabled={isDisabled}
-        className={getInputClasses(isDisabled, error)}
+        className={getInputClasses(isDisabled)}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
       />
-      {error && <ModalError>{error}</ModalError>}
     </>
   );
 }
@@ -67,25 +76,16 @@ export function NumberInput({
   value,
   onChange,
   onBlur,
-  error,
   placeholder,
   halfWidth,
-  info
+  isError,
 }: BaseInputProps) {
-  const [localValue, setLocalValue] = useState(value);
-
-  useEffect(() => {
-    if (value !== localValue) {
-      setLocalValue(value);
-    }
-  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9.,]/g, '');
     const normalizedValue = rawValue.replace(/,/g, ".");
 
     if (rawValue === "" || /^[0-9]*[.,]?[0-9]*$/.test(rawValue)) {
-      setLocalValue(normalizedValue);
       onChange(normalizedValue);
     }
   };
@@ -94,15 +94,63 @@ export function NumberInput({
     <>
       <input
         disabled={isDisabled}
-        className={getInputClasses(isDisabled, error, halfWidth)}
-        value={localValue}
+        className={getInputClasses(isDisabled, halfWidth, isError)}
+        value={value}
         onChange={handleChange}
         onBlur={onBlur}
-        placeholder={info ? `Доступно: ${info}` : placeholder}
+        placeholder={placeholder}
+      />
+    </>
+  );
+}
+
+export function VolumeInput({
+  isDisabled,
+  volumeValue,
+  onChange,
+  availableVolume,
+  material,
+  error,
+  setError,
+}: VolumeInputProps) {
+  const [localVolume, setLocalVolume] = useState(volumeValue);
+
+  useEffect(() => {
+    const handleError = () => {
+      if (Number(localVolume) > Number(availableVolume)) {
+        setError("Недостаточно доступного объема");
+      } else {
+        setError('');
+      }
+    }
+    handleError();
+  }, [localVolume])
+
+  const handleChange = (volume: string) => {
+    setLocalVolume(volume);
+    onChange(volume);
+  };
+
+  const getPlaceholder = () => {
+    if (availableVolume) {
+      return `Доступно: ${Number(availableVolume)} ${material.units}`
+    } else {
+      return `Объем${material?.units ? ", " + material?.units : ''}`
+    }
+  };
+
+  return (
+    <>
+      <NumberInput
+        isDisabled={isDisabled}
+        onChange={handleChange}
+        value={localVolume}
+        placeholder={getPlaceholder()}
+        isError={error ? true : false}
       />
       {error && <ModalError>{error}</ModalError>}
     </>
-  );
+  )
 }
 
 // Инпут объема и массы
@@ -112,9 +160,10 @@ export function VolumeAndCapacityInput({
   material,
   density,
   onChange,
-  availableVolumeInfo,
+  availableVolume,
   currentVolume,
-  error
+  error,
+  setError,
 }: VolumeAndCapacityInputProps) {
   const parseSafe = (val: string) => parseFloat(val) || 0;
 
@@ -139,6 +188,17 @@ export function VolumeAndCapacityInput({
       setLocalWeight(capacityToWeight(volumeValue));
     }
   }, [volumeValue]);
+
+  useEffect(() => {
+    const handleError = () => {
+      if (Number(localVolume) > Number(availableVolume)) {
+        setError("Недостаточно доступного объема")
+      } else {
+        setError('')
+      }
+    }
+    handleError();
+  }, [localVolume])
 
   const handleVolumeChange = (newVolume: string) => {
     setLocalVolume(newVolume);
@@ -195,7 +255,7 @@ export function VolumeAndCapacityInput({
           value={localVolume}
           onChange={handleVolumeChange}
           onBlur={handleBlur}
-          placeholder={getPlaceholder(availableVolumeInfo, currentVolume, "Объем", volumeUnit)}
+          placeholder={getPlaceholder(availableVolume, currentVolume, "Объем", volumeUnit)}
           halfWidth
         />
         <NumberInput
@@ -203,7 +263,7 @@ export function VolumeAndCapacityInput({
           value={localWeight}
           onChange={handleWeightChange}
           onBlur={handleBlur}
-          placeholder={getPlaceholder(availableVolumeInfo, currentVolume, "Вес", weightUnit, capacityToWeight)}
+          placeholder={getPlaceholder(availableVolume, currentVolume, "Вес", weightUnit, capacityToWeight)}
           halfWidth
         />
       </div>

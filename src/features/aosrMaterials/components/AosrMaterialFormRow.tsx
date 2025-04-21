@@ -2,9 +2,8 @@ import { Material } from "@/entities/material";
 import { Option } from "@/entities/option";
 import { useEffect, useState } from "react";
 import Select from "react-select/base";
-import { isUnitTranslatable } from "@/shared/utils/material";
 import { ActionButtons } from "@/shared/ui/ActionButtons";
-import { NumberInput, VolumeAndCapacityInput } from "@/shared/ui/Input";
+import { NumberInput } from "@/shared/ui/Input";
 import { ProgressBar } from "@/shared/ui/ProgressBar";
 import { AosrMaterial } from "@/entities/aosr";
 import { Tag } from "@/shared/ui/Tag";
@@ -12,7 +11,6 @@ import { Passport, PassportUsage } from "@/entities/passport";
 
 
 type AosrMaterialFormProps = {
-  materials: Material[];
   materialOptions: Option[];
   passportsMap: Map<number, Passport>;
   aosrMaterialsMap: Map<number, AosrMaterial>;
@@ -28,7 +26,6 @@ type AosrMaterialFormProps = {
 
 export function AosrMaterialFormRow(
   {
-    materials,
     materialOptions,
     passportsMap,
     aosrMaterialsMap,
@@ -91,7 +88,6 @@ export function AosrMaterialFormRow(
             value={aosrMaterial.volume}
             onChange={(value: string) => setAosrMaterial({ ...aosrMaterial, volume: value })}
             placeholder={`Объем${', ' + selectedMaterial.units || ''}`}
-            error=""
           />
         </div>
 
